@@ -1,0 +1,28 @@
+.button {
+    background-color: rgb(88, 88, 88);
+    color: rgb(185, 185, 185);
+}
+
+.button:disabled {
+    color: rgb(106, 106, 106);
+    background-color: rgb(58, 58, 58);
+    display: flex;
+}
+
+.button:hover {
+    border-left-color: rgb(195, 128, 0);
+    border-right-color: rgb(195, 128, 0);
+    border-top-color: rgb(195, 128, 0);
+    border-bottom-color: rgb(195, 128, 0);
+}
+
+.button:active {
+    border-left-color: rgb(231, 152, 0);
+    border-right-color: rgb(231, 152, 0);
+    border-top-color: rgb(231, 152, 0);
+    border-bottom-color: rgb(231, 152, 0);
+    color: rgb(231, 152, 0);
+}
+
+.button-ability {
+}

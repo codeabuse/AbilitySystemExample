@@ -1,0 +1,12 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+    <Style src="project://database/Assets/UI/Styles/ability-management-styles.uss?fileID=7433441132597879392&amp;guid=4081e39f0c339874ab95f504fa47927e&amp;type=3#ability-management-styles" />
+    <ui:VisualElement name="Root" style="flex-grow: 1;">
+        <ui:VisualElement name="MainArea" style="flex-grow: 1;" />
+        <ui:VisualElement name="ButtonsArea" style="flex-grow: 0; height: 16%; padding-left: 0; padding-right: 0; padding-top: 0; padding-bottom: 0; min-width: auto; min-height: auto; flex-direction: row;">
+            <ui:VisualElement name="AbilitiesArea" style="flex-grow: 1; flex-direction: row;" />
+            <ui:VisualElement name="UtilityArea" style="flex-grow: 1; width: 15%; max-width: 20%; margin-left: 10px; margin-right: 10px; margin-top: 10px; margin-bottom: 10px; flex-direction: row-reverse; justify-content: space-between; align-items: stretch;">
+                <ui:Button text="Button" display-tooltip-when-elided="true" name="Button" style="border-left-color: rgb(58, 58, 58); border-right-color: rgb(58, 58, 58); border-top-color: rgb(58, 58, 58); border-bottom-color: rgb(58, 58, 58); border-left-width: 6px; border-right-width: 6px; border-top-width: 6px; border-bottom-width: 6px; border-top-left-radius: 17px; border-bottom-left-radius: 17px; border-top-right-radius: 17px; border-bottom-right-radius: 17px; flex-shrink: 1; flex-grow: 0; max-width: none; max-height: 90%;" />
+            </ui:VisualElement>
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

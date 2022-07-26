@@ -1,0 +1,22 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="False">
+    <Style src="project://database/Assets/Resources/UI/Styles/ability-management-styles.uss?fileID=7433441132597879392&amp;guid=4081e39f0c339874ab95f504fa47927e&amp;type=3#ability-management-styles" />
+    <ui:VisualElement name="Root" style="flex-grow: 1; flex-direction: row; background-color: rgb(56, 56, 56);">
+        <ui:VisualElement name="AbilityGraphArea" style="flex-grow: 1; background-color: rgb(56, 56, 56); margin-left: 20px; margin-right: 20px; margin-top: 20px; margin-bottom: 20px; border-left-width: 0; border-right-width: 0; border-top-width: 0; border-bottom-width: 0; border-top-left-radius: 15px; border-bottom-left-radius: 15px; border-top-right-radius: 15px; border-bottom-right-radius: 15px; display: flex;">
+            <AbilitySystem.AbilityGraphView style="flex-grow: 1;" />
+        </ui:VisualElement>
+        <ui:VisualElement name="AbilityDescriptionArea" style="flex-grow: 1; width: 20%; min-width: 20%; min-height: 100%; max-width: 25%; visibility: hidden;">
+            <ui:VisualElement name="TextArea" style="flex-grow: 1; margin-left: 10px; margin-right: 10px; margin-top: 10px; margin-bottom: 10px;">
+                <ui:Label text="Ability Title" display-tooltip-when-elided="true" name="AbilityTitle" style="height: 50px; margin-left: 0; margin-right: 0; margin-top: 0; margin-bottom: 0; padding-left: 6px; padding-right: 6px; padding-top: 6px; padding-bottom: 6px; font-size: 25%; -unity-font-style: bold;" />
+                <ui:Label text="Ability description text" display-tooltip-when-elided="true" name="AbilityDescription" style="flex-grow: 1; padding-left: 6px; padding-right: 6px; padding-top: 6px; padding-bottom: 6px; font-size: 16px;" />
+                <ui:VisualElement name="InfoArea" style="height: 15%; flex-direction: row;">
+                    <ui:Label text="Ability points required:" display-tooltip-when-elided="true" name="AbilityCostLabel" style="flex-grow: 0; padding-left: 6px; padding-right: 6px; padding-top: 6px; padding-bottom: 6px; font-size: 16px;" />
+                    <ui:Label text="0&#10;" display-tooltip-when-elided="true" name="AbilityCostValue" style="flex-grow: 1; padding-left: 6px; padding-right: 6px; padding-top: 6px; padding-bottom: 6px; font-size: 16px;" />
+                </ui:VisualElement>
+            </ui:VisualElement>
+            <ui:VisualElement name="ButtonsArea" style="flex-grow: 0; height: 70px; flex-direction: row; justify-content: space-around; padding-left: 8px; padding-right: 8px; padding-top: 8px; padding-bottom: 8px; margin-left: 0; margin-right: 0; margin-top: 0; margin-bottom: 0;">
+                <ui:Button text="Learn" display-tooltip-when-elided="true" name="LearnButton" class="button" style="flex-grow: 1; border-left-width: 4px; border-right-width: 4px; border-top-width: 4px; border-bottom-width: 4px; font-size: 20px; -unity-font-style: bold;" />
+                <ui:Button text="Forget" display-tooltip-when-elided="true" name="ForgetButton" class="button" style="flex-grow: 1; border-left-width: 4px; border-right-width: 4px; border-top-width: 4px; border-bottom-width: 4px; font-size: 20px; -unity-font-style: bold;" />
+            </ui:VisualElement>
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>
