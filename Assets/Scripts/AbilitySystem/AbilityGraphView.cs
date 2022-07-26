@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.UIElements;
 
@@ -7,6 +8,7 @@ namespace AbilitySystem
     public class AbilityGraphView : VisualElement
     {
         private const string ability_button_class = "button-ability";
+        private static Texture2D default_icon = AssetDatabase.LoadAssetAtPath<Texture2D>("Assets/Textures/icon-fire.png");
 
         private Dictionary<AbilityGraphNode, Button> _abilityButtons = new();
 
@@ -63,8 +65,6 @@ namespace AbilitySystem
             var nodeButton = new Button(
                     () => AbilityManager.Instance.SelectAbilityTreeNode(node));
             nodeButton.AddToClassList(ability_button_class);
-            
-            nodeButton.style.backgroundImage = node.Ability.Icon;
             _abilityButtons.Add(node, nodeButton);
         }
 

@@ -563,13 +563,14 @@ GameObject:
   - component: {fileID: 592121878}
   - component: {fileID: 592121879}
   - component: {fileID: 592121880}
+  - component: {fileID: 592121881}
   m_Layer: 0
   m_Name: AbilitiesPanel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &592121878
 Transform:
   m_ObjectHideFlags: 0
@@ -611,9 +612,32 @@ MonoBehaviour:
   m_GameObject: {fileID: 592121876}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1b7d04622a34400bb0322d56b0f2c01f, type: 3}
+  m_Script: {fileID: 11500000, guid: 9cf753c9396a4adfb182e8a002bd03b4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  TogglePanelAction: {fileID: -7767675205052905611, guid: 1120c53903f763646bda3af54bf34829,
+    type: 3}
+--- !u!114 &592121881
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 592121876}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b2215209fd234df7ae387caa16df6cb9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _selectedCharacter: {fileID: 0}
+  _selectedAbilityNode:
+    _position: {x: 0, y: 0}
+    _ability: {fileID: 0}
+    _learningCost: 0
+    _connections: []
+  references:
+    version: 2
+    RefIds: []
 --- !u!1 &775279611
 GameObject:
   m_ObjectHideFlags: 0
@@ -1012,7 +1036,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _panels:
-  - {fileID: 592121880}
+  - {fileID: 0}
 --- !u!114 &1781248246
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1581,14 +1605,13 @@ GameObject:
   - component: {fileID: 2062820258}
   - component: {fileID: 2062820259}
   - component: {fileID: 2062820260}
-  - component: {fileID: 2062820261}
   m_Layer: 0
   m_Name: TestPanel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &2062820258
 Transform:
   m_ObjectHideFlags: 0
@@ -1634,18 +1657,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _uiDocument: {fileID: 2062820259}
---- !u!114 &2062820261
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2062820257}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5ded848699474462814a0e7a38f85abb, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1001 &5553446360185181839
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1653,6 +1664,17 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1654744042411647775, guid: b4deb38a75d6d874eb4fb81a4520384e,
+        type: 3}
+      propertyPath: _abilities.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1654744042411647775, guid: b4deb38a75d6d874eb4fb81a4520384e,
+        type: 3}
+      propertyPath: _abilities.Array.data[0]
+      value: 
+      objectReference: {fileID: 11400000, guid: 66992ce6e0e64d241bf3fa35709c5369,
+        type: 2}
     - target: {fileID: 5553446361570618008, guid: b4deb38a75d6d874eb4fb81a4520384e,
         type: 3}
       propertyPath: m_RootOrder

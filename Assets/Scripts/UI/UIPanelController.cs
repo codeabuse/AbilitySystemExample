@@ -41,6 +41,14 @@ public abstract class UIPanelController : MonoBehaviour
         OnPanelHidden?.Invoke(this);
     }
 
+    public void TogglePanel()
+    {
+        if (gameObject.activeInHierarchy)
+            HidePanel();
+        else
+            ShowPanel();
+    }
+
     protected abstract void Initialize();
     
     protected virtual void OnShown(){}

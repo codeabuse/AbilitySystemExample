@@ -1,0 +1,34 @@
+{
+    "name": "UIActions",
+    "maps": [
+        {
+            "name": "Default",
+            "id": "9ef4d4b8-b797-4db9-9a89-d4a432bccb2b",
+            "actions": [
+                {
+                    "name": "OpenAbilitiesPanel",
+                    "type": "Button",
+                    "id": "cfc36638-4ea5-4752-abef-30e1c0adaef1",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "85cefbc9-350d-46a9-80c4-91d5dc8a2044",
+                    "path": "<Keyboard>/c",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "OpenAbilitiesPanel",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
+        }
+    ],
+    "controlSchemes": []
+}

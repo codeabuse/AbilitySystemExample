@@ -32,6 +32,7 @@ namespace AbilitySystem
             var node = new AbilityGraphNode();
             _nodes.Add(node);
             OnAbilityNodeCreated?.Invoke(node);
+            Debug.Log($"{_nodes.Count} nodes");
             return node;
         }
 

@@ -13,9 +13,9 @@ namespace AbilitySystem
 
         public override VisualElement CreatePropertyGUI(SerializedProperty property)
         {
-            var root = new VisualElement() { style = { flexGrow = 1 } };
+            var root = new VisualElement { style = { flexGrow = 1 } };
             _positionField = new Vector2Field() { label = "Position" };
-            _abilityField = new ObjectField("Ability");
+            _abilityField = new ObjectField("Ability"){objectType = typeof(Ability)};
             _learningCostField = new IntegerField("Learning Cost");
             _positionField.BindProperty(property.FindPropertyRelative(AbilityGraphNode.POSITION_PROP_NAME));
             _abilityField.BindProperty(property.FindPropertyRelative(AbilityGraphNode.ABILITY_PROP_NAME));
