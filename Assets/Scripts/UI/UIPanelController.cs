@@ -1,30 +1,47 @@
-﻿using System.Collections;
+﻿using System;
+using PixelHunt;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using UnityEngine.UIElements;
 
 [RequireComponent(typeof(UIDocument))]
 public abstract class UIPanelController : MonoBehaviour
 {
-    public VisualElement Root => _document ? _document.rootVisualElement : null;
+    public VisualElement Root => Document ? Document.rootVisualElement : null;
+    public UIDocument Document => _document? _document : _document = GetComponent<UIDocument>();
+    
+    public InputActionReference TogglePanelAction => _togglePanelAction;
+
+    [SerializeField]
+    private bool _showOnStart;
+    [SerializeField]
+    private InputActionReference _togglePanelAction;
     
     public UIPanelEvent OnPanelShown;
     public UIPanelEvent OnPanelHidden;
 
-    protected UIDocument _document;
+    private UIDocument _document;
 
-    protected virtual IEnumerator Start()
+
+    protected virtual void Start()
     {
-        if (!_document) _document = GetComponent<UIDocument>();
-        if (!_document)
+        if (!Document)
         {
             Debug.LogError($"{name} doesn't have UIDocument component!");
-            yield break;
+            return;
         }
         UIManager.Instance.RegisterPanel(this);
-        yield return null; //dirty hack because ui elements layout is a bit late
-        yield return null;
+        Document.rootVisualElement.RegisterOnLayoutDoneCallback(OnDocumentLayoutDone);
+    }
 
-        Initialize();
+    protected virtual void OnEnable()
+    {
+        TogglePanelAction.action.Enable();
+    }
+
+    protected virtual void OnDestroy()
+    {
+        TogglePanelAction.action.Disable();
     }
 
     public void ShowPanel()
@@ -41,6 +58,11 @@ public abstract class UIPanelController : MonoBehaviour
         OnPanelHidden?.Invoke(this);
     }
 
+    public void OnToggleAction(InputAction.CallbackContext context)
+    {
+        TogglePanel();
+    }
+
     public void TogglePanel()
     {
         if (gameObject.activeInHierarchy)
@@ -49,7 +71,7 @@ public abstract class UIPanelController : MonoBehaviour
             ShowPanel();
     }
 
-    protected abstract void Initialize();
+    protected abstract void OnDocumentLayoutDone();
     
     protected virtual void OnShown(){}
     protected virtual void OnHidden(){}

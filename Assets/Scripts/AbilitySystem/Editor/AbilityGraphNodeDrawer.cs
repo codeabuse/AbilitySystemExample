@@ -19,7 +19,6 @@ namespace AbilitySystem
             _learningCostField = new IntegerField("Learning Cost");
             _positionField.BindProperty(property.FindPropertyRelative(AbilityGraphNode.POSITION_PROP_NAME));
             _abilityField.BindProperty(property.FindPropertyRelative(AbilityGraphNode.ABILITY_PROP_NAME));
-            _learningCostField.BindProperty(property.FindPropertyRelative(AbilityGraphNode.LEARNING_COST_PROP_NAME));
             root.Add(_positionField);
             root.Add(_abilityField);
             root.Add(_learningCostField);

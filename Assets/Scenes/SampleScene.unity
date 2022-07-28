@@ -600,7 +600,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_PanelSettings: {fileID: 11400000, guid: 05b2440ea58bae94fb092f59e29cba39, type: 2}
   m_ParentUI: {fileID: 0}
-  sourceAsset: {fileID: 9197481963319205126, guid: 8ccb92f9c0f2a034ab67f5836a7a7197,
+  sourceAsset: {fileID: 9197481963319205126, guid: 46d690d8efe62154c93747b7f0fc17df,
     type: 3}
   m_SortingOrder: 0
 --- !u!114 &592121880
@@ -615,7 +615,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9cf753c9396a4adfb182e8a002bd03b4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  TogglePanelAction: {fileID: -7767675205052905611, guid: 1120c53903f763646bda3af54bf34829,
+  _showOnStart: 0
+  _togglePanelAction: {fileID: -7767675205052905611, guid: 1120c53903f763646bda3af54bf34829,
+    type: 3}
+  InspectorVisualTree: {fileID: 9197481963319205126, guid: c2904bedc657cc146ad0f95289abf672,
     type: 3}
 --- !u!114 &592121881
 MonoBehaviour:
@@ -629,15 +632,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b2215209fd234df7ae387caa16df6cb9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _selectedCharacter: {fileID: 0}
-  _selectedAbilityNode:
-    _position: {x: 0, y: 0}
-    _ability: {fileID: 0}
-    _learningCost: 0
-    _connections: []
-  references:
-    version: 2
-    RefIds: []
+  _selectedCharacter: {fileID: 1453079577}
+  _panelController: {fileID: 592121880}
 --- !u!1 &775279611
 GameObject:
   m_ObjectHideFlags: 0
@@ -889,6 +885,18 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 5553446360185181839}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &1453079577 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 1654744042411647775, guid: b4deb38a75d6d874eb4fb81a4520384e,
+    type: 3}
+  m_PrefabInstance: {fileID: 5553446360185181839}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ac59024f745b4eb5bbce7a9bc5b5c9ca, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1476849123
 GameObject:
   m_ObjectHideFlags: 0
@@ -1036,7 +1044,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _panels:
-  - {fileID: 0}
+  - {fileID: 592121880}
 --- !u!114 &1781248246
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1634,7 +1642,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2062820257}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 19102, guid: 0000000000000000e000000000000000, type: 0}
   m_Name: 
@@ -1664,6 +1672,12 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1654744042411647775, guid: b4deb38a75d6d874eb4fb81a4520384e,
+        type: 3}
+      propertyPath: _abilityGraph
+      value: 
+      objectReference: {fileID: 11400000, guid: 00a637e945bfb2b4dad6ba605d8ffd9c,
+        type: 2}
     - target: {fileID: 1654744042411647775, guid: b4deb38a75d6d874eb4fb81a4520384e,
         type: 3}
       propertyPath: _abilities.Array.size

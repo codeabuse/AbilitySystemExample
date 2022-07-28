@@ -31,6 +31,8 @@ namespace AbilitySystem
 
     public class AbilityPointsRequirement : AbilityLearnRequirement
     {
+        public int LearningCost;
+        
         public override bool IsSatisfied(AbilityGraphNode node, Character character)
         {
             return character.AbilityPoints >= node.LearningCost;

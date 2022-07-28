@@ -7,11 +7,13 @@ namespace AbilitySystem
     [CreateAssetMenu(fileName = "New Ability Graph", menuName = "Abilities/Ability Graph", order = 0)]
     public class AbilityGraph : ScriptableObject
     {
+        public List<AbilityGraphNode> Nodes => _nodes;
+        public IEnumerable<GraphNodeConnection> Connections => _connections;
+        public AbilityGraphNode RootNode => _root;
+        
         public Action<AbilityGraphNode> OnAbilityNodeCreated;
         public Action<AbilityGraphNode> OnAbilityNodeRemoved;
-        public Action<AbilityGraphNode> OnAbilityNodeSelected;
-        // stores abilities as nodes
-        // connects nodes into graph
+        
         [SerializeReference]
         private AbilityGraphNode _root;
         
@@ -22,17 +24,11 @@ namespace AbilitySystem
         private List<GraphNodeConnection> _connections = new();
 
 
-        public AbilityGraphNode RootNode => _root;
-
-        public IEnumerable<AbilityGraphNode> Nodes => _nodes;
-        public IEnumerable<GraphNodeConnection> Connections => _connections;
-
         public AbilityGraphNode CreateNode()
         {
-            var node = new AbilityGraphNode();
+            var node = new AbilityGraphNode(null, this);
             _nodes.Add(node);
             OnAbilityNodeCreated?.Invoke(node);
-            Debug.Log($"{_nodes.Count} nodes");
             return node;
         }
 

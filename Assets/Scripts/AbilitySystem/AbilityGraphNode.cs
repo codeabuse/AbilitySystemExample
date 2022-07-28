@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 
 namespace AbilitySystem
@@ -10,16 +9,13 @@ namespace AbilitySystem
     {
         public static string POSITION_PROP_NAME => nameof(_position);
         public static string ABILITY_PROP_NAME => nameof(_ability);
-        public static string LEARNING_COST_PROP_NAME => nameof(_learningCost);
-        
+        public IEnumerable<AbilityLearnRequirement> Requirements => _requirements;
+
         [SerializeField]
         private Vector2 _position;
         
         [SerializeReference]
         private Ability _ability;
-
-        [SerializeField]
-        private int _learningCost;
 
         [SerializeReference]
         private List<GraphNodeConnection> _connections = new ();
@@ -35,21 +31,13 @@ namespace AbilitySystem
             set => _position = value;
         }
         
-        // node should have only one connection
-        // or if more than one, should check the remaining connections of the connected nodes
-        public bool CanBeForgotten => Graph.RootNode != this && _connections.Count == 1 || 
-                                 (from connection in _connections select connection.Other(this)).
-                                 All(n => n._connections.All(c => c.Connects(Graph.RootNode, _connections)));
-
-        public int LearningCost => _learningCost;
+        
+        public int LearningCost => (_requirements.Find(x => x is AbilityPointsRequirement) as AbilityPointsRequirement)?.LearningCost?? 0;
+        
         public Ability Ability 
         { 
             get => _ability;
-            set
-            {
-                _ability = value;
-                _learningCost = _ability.DefaultCost;
-            }
+            set => _ability = value;
         }
 
         public IEnumerable<GraphNodeConnection> Connections => _connections;
@@ -87,5 +75,11 @@ namespace AbilitySystem
         {
             _connections.Remove(connection);
         }
+
+        public void AddRequirement(AbilityLearnRequirement requirement) => 
+                _requirements.Add(requirement);
+
+        public void RemoveRequirement(AbilityLearnRequirement requirement) => 
+                _requirements.Remove(requirement);
     }
 }

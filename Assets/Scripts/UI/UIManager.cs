@@ -10,6 +10,19 @@ public class UIManager : SingletonMonobehaviour<UIManager>
     [SerializeField]
     private List<UIPanelController> _panels = new();
 
+    protected void Start()
+    {
+        foreach (var panelController in _panels)
+        {
+            if (panelController.TogglePanelAction)
+            {
+                // ReSharper disable once Unity.NoNullPropagation
+                panelController.TogglePanelAction.action.Enable();
+                panelController.TogglePanelAction.action.performed += panelController.OnToggleAction;
+            }
+        }
+    }
+
     public void RegisterPanel(UIPanelController panelController)
     {
         if (!panelController)

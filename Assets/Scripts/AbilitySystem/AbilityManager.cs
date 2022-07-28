@@ -7,20 +7,29 @@ namespace AbilitySystem
 {
     public class AbilityManager : SingletonMonobehaviour<AbilityManager>
     {
+        public Character SelectedCharacter => _selectedCharacter;
         [SerializeField]
         protected Character _selectedCharacter;
         [SerializeField]
+        private AbilityManagerPanelController _panelController;
         protected AbilityGraphNode _selectedAbilityNode;
 
         public Action<AbilityGraphNode> OnAbilityNodeSelected;
         public Action<Character> OnCharacterSelected;
-        
-        // get character
-        // obtain his ability tree
-        // get learned abilities to build tree status
-        // learn/forget abilities
 
-        public void SelectCharacter(Character character) => _selectedCharacter = character;
+        private void Start()
+        {
+            if (_selectedCharacter)
+            {
+                //OnCharacterSelected?.Invoke(_selectedCharacter);
+            }
+        }
+
+        public void SelectCharacter(Character character)
+        {
+            _selectedCharacter = character;
+            OnCharacterSelected?.Invoke(character);
+        }
 
         public void SelectAbilityTreeNode(AbilityGraphNode abilityNode) => _selectedAbilityNode = abilityNode;
 
@@ -31,7 +40,7 @@ namespace AbilitySystem
                 return;
             }
 
-            if (_selectedAbilityNode.Ability.Requirements.All(r => r.IsSatisfied(_selectedAbilityNode, _selectedCharacter)))
+            if (_selectedAbilityNode.Requirements.All(r => r.IsSatisfied(_selectedAbilityNode, _selectedCharacter)))
             {
                 _selectedCharacter.AddAbility(_selectedAbilityNode.Ability);
                 _selectedAbilityNode.Ability.Activate(_selectedCharacter);
@@ -40,7 +49,16 @@ namespace AbilitySystem
 
         public void ForgetSelected()
         {
-            if (_selectedCharacter == null || _selectedAbilityNode == null || _selectedAbilityNode.CanBeForgotten)
+            // node should have only one connection
+            // or if more than one, should check the remaining connections of the connected nodes
+            var abilityConnections = _selectedAbilityNode.Connections;
+            var selectedGraphRoot = _selectedCharacter.AbilityGraph.RootNode;
+            var canBeForgotten = _selectedAbilityNode != selectedGraphRoot && _selectedAbilityNode.Connections.Count() == 1 || 
+                                     (from connection in _selectedAbilityNode.Connections select connection.Other(_selectedAbilityNode)).
+                                     All(n => n.Connections.All(
+                                             c => c.Connects(selectedGraphRoot, abilityConnections.ToList())));
+
+            if (_selectedCharacter == null || _selectedAbilityNode == null || !canBeForgotten)
             {
                 return;
             }

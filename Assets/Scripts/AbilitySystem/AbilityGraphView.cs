@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using PixelHunt;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.UIElements;
@@ -7,86 +8,89 @@ namespace AbilitySystem
 {
     public class AbilityGraphView : VisualElement
     {
+
+        #region Shorthands
+
         private const string ability_button_class = "button-ability";
         private static Texture2D default_icon = AssetDatabase.LoadAssetAtPath<Texture2D>("Assets/Textures/icon-fire.png");
+        private static StyleEnum<Position> position_relative => new (Position.Relative);
+        private static StyleEnum<Position> position_absolute => new (Position.Absolute);
 
-        private Dictionary<AbilityGraphNode, Button> _abilityButtons = new();
+        #endregion
+        
+        
+        private List<AbilityButton> _abilityButtons = new();
 
         private AbilityManager _manager;
         private AbilityGraph _graph;
-        private VisualElement _descriptionArea;
-        private Label
-                _abilityLabel,
-                _abilityDescription,
-                _abilityCost;
+        private VisualElement
+                _abilityInspector;
 
-        private StyleEnum<Visibility> hidden => new (Visibility.Hidden);
-        private StyleEnum<Visibility> visible => new (Visibility.Visible);
 
         public new class UxmlFactory : UxmlFactory<AbilityGraphView, UxmlTraits> { }
         public new class UxmlTraits : VisualElement.UxmlTraits { }
 
-        public void BindToManager(AbilityManager manager)
+        public AbilityButton CreateNodeButton(AbilityGraphNode node)
         {
-            Debug.Log("Binding AbilityGraphView to manager");
-            _manager = manager;
-            manager.OnAbilityNodeSelected += ShowAbilityInfo;
-            _descriptionArea = this.Q("AbilityDescriptionArea");
-            _abilityLabel = this.Q<Label>("AbilityTitle");
-            _abilityDescription = this.Q<Label>("AbilityDescription");
-            _abilityCost = this.Q<Label>("AbilityCostValue");
-        }
-
-        public void BindToGraph(AbilityGraph graph)
-        {
-            _graph = graph;
-            _graph.OnAbilityNodeCreated += CreateNodeView;
-            _graph.OnAbilityNodeRemoved += RemoveNodeView;
-        }
-
-        ~AbilityGraphView()
-        {
-            _manager.OnAbilityNodeSelected -= ShowAbilityInfo;
-            _graph.OnAbilityNodeCreated -= CreateNodeView;
-            _graph.OnAbilityNodeRemoved -= RemoveNodeView;
-        }
-
-        public void ClearAbilityButtons()
-        {
-            foreach (var abilityButton in _abilityButtons)
+            var buttonForNode = _abilityButtons.Find(b => b.Node == node);
+            if (buttonForNode != null) return buttonForNode;
+            var nodeButton = new AbilityButton(node, null)
             {
-                Remove(abilityButton.Value);
-            }
-            _abilityButtons.Clear();
-        }
-
-        public void CreateNodeView(AbilityGraphNode node)
-        {
-            var nodeButton = new Button(
-                    () => AbilityManager.Instance.SelectAbilityTreeNode(node));
+                    style =
+                    {
+                            position = position_absolute,
+                            backgroundImage = node.Ability?.Icon
+                    },
+            };
+            nodeButton.RegisterOnLayoutDoneCallback(()=> nodeButton.transform.position = calculateButtonPosition(nodeButton) );
             nodeButton.AddToClassList(ability_button_class);
-            _abilityButtons.Add(node, nodeButton);
+            _abilityButtons.Add(nodeButton);
+            Add(nodeButton);
+            
+            return nodeButton;
         }
 
-        public void RemoveNodeView(AbilityGraphNode node)
+        private Vector3 calculateButtonPosition(AbilityButton nodeButton)
         {
-            var nodeButton = _abilityButtons[node];
-            nodeButton.parent.Remove(nodeButton);
-            _abilityButtons.Remove(node);
+            return nodeButton.Node.Position + nodeButton.parent.layout.size * .5f - nodeButton.layout.size* .5f;
         }
 
-        private void ShowAbilityInfo(AbilityGraphNode node)
+        public void RemoveButtonWithNode(AbilityGraphNode node)
         {
-            if (node == null)
+            var buttonFound = _abilityButtons.Find(b => b.Node == node);
+            if (buttonFound != null)
             {
-                _descriptionArea.style.visibility = hidden;
-                return;
+                Remove(buttonFound);
+                _abilityButtons.Remove(buttonFound);
             }
+        }
 
-            _descriptionArea.style.visibility = visible;
-            _abilityLabel.text = node.Ability.DescriptiveName;
-            _abilityDescription.text = node.Ability.Description;
-            _abilityCost.text = node.LearningCost.ToString();
+        public void RemoveAbilityButton(AbilityButton button)
+        {
+            if (_abilityButtons.Contains(button))
+            {
+                _abilityButtons.Remove(button);
+            }
+            Remove(button);
+        }
+
+        public void DrawConnection(GraphNodeConnection connection)
+        {
+            
+        }
+
+        public void MoveAbilityButton(AbilityButton node, Vector2 delta)
+        {
+            
+        }
+
+        public void CleanButtons()
+        {
+            var childButtons =this.Query<AbilityButton>();
+            childButtons.ForEach(b =>
+            {
+                if (b.Node == null) Remove(b);
+            });
         }
     }
 }
