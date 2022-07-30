@@ -5,6 +5,16 @@ using UnityEngine.UIElements;
 public class DragManipulator : MouseManipulator
 {
     public event Action<Vector2> OnDragged;
+    public event Action<Vector2> OnDraggedScaled;
+
+    public float DragScale
+    {
+        get => _dragScale; 
+        set => _dragScale = Mathf.Clamp(value, 0, 10f);
+    }
+
+
+    private float _dragScale = 1;
     protected bool _isDragging;
 
     public VisualElement DraggedElement
@@ -47,6 +57,7 @@ public class DragManipulator : MouseManipulator
             _isDragging = true;
             target.CaptureMouse();
             evt.StopPropagation();
+            DraggedElement.HandleEvent(new ElementDragStartedEvent());
         }
     }
 
@@ -54,9 +65,12 @@ public class DragManipulator : MouseManipulator
     {
         if (_isDragging && target.HasMouseCapture())
         {
-            DraggedElement.transform.position += new Vector3(evt.mouseDelta.x, evt.mouseDelta.y);
+            var scaledDelta = new Vector3(evt.mouseDelta.x, evt.mouseDelta.y) * _dragScale;
+            DraggedElement.transform.position += scaledDelta;
             OnDragged?.Invoke(evt.mouseDelta);
+            OnDraggedScaled?.Invoke(scaledDelta);
             evt.StopPropagation();
+            DraggedElement.HandleEvent(new ElementDraggedEvent());
         }
     }
 
@@ -67,5 +81,21 @@ public class DragManipulator : MouseManipulator
         _isDragging = false;
         target.ReleaseMouse();
         evt.StopPropagation();
+        DraggedElement.HandleEvent(new ElementDragStoppedEvent());
     }
+}
+
+public class ElementDraggedEvent : MouseEventBase<ElementDraggedEvent>
+{
+    
+}
+
+public class ElementDragStartedEvent : MouseEventBase<ElementDraggedEvent>
+{
+    
+}
+
+public class ElementDragStoppedEvent : MouseEventBase<ElementDraggedEvent>
+{
+    
 }

@@ -31,7 +31,7 @@ public abstract class UIPanelController : MonoBehaviour
             return;
         }
         UIManager.Instance.RegisterPanel(this);
-        Document.rootVisualElement.RegisterOnLayoutDoneCallback(OnDocumentLayoutDone);
+        Document.rootVisualElement.ExecuteAfterLayoutDone(OnDocumentLayoutDone);
     }
 
     protected virtual void OnEnable()
@@ -71,8 +71,8 @@ public abstract class UIPanelController : MonoBehaviour
             ShowPanel();
     }
 
-    protected abstract void OnDocumentLayoutDone();
-    
+    protected virtual void OnDocumentLayoutDone() { }
+
     protected virtual void OnShown(){}
     protected virtual void OnHidden(){}
 }

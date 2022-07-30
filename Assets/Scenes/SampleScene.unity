@@ -1676,7 +1676,7 @@ PrefabInstance:
         type: 3}
       propertyPath: _abilityGraph
       value: 
-      objectReference: {fileID: 11400000, guid: 00a637e945bfb2b4dad6ba605d8ffd9c,
+      objectReference: {fileID: 11400000, guid: 14d2c6bdb3a848b46978ea21ea7d0165,
         type: 2}
     - target: {fileID: 1654744042411647775, guid: b4deb38a75d6d874eb4fb81a4520384e,
         type: 3}

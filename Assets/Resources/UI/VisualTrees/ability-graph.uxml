@@ -1,6 +1,6 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="False">
     <Style src="project://database/Assets/Resources/UI/Styles/ability-management-styles.uss?fileID=7433441132597879392&amp;guid=4081e39f0c339874ab95f504fa47927e&amp;type=3#ability-management-styles" />
-    <ui:VisualElement name="AbilityGraphArea" class="section-panel" style="flex-grow: 1; background-color: rgb(56, 56, 56); margin-left: 0; margin-right: 0; margin-top: 0; margin-bottom: 0; display: flex; min-height: 400px;">
-        <AbilitySystem.AbilityGraphView style="flex-grow: 1; background-color: rgb(60, 51, 46); padding-left: 1px; padding-right: 1px; padding-top: 1px; padding-bottom: 1px; margin-left: 4px; margin-right: 4px; margin-top: 4px; margin-bottom: 4px;" />
+    <ui:VisualElement name="AbilityGraphArea" class="section-panel" style="flex-grow: 1; background-color: rgb(60, 51, 46); margin-left: 0; margin-right: 0; margin-top: 0; margin-bottom: 0; display: flex; min-height: 400px;">
+        <AbilitySystem.AbilityGraphView style="flex-grow: 1; background-color: rgba(0, 0, 0, 0); padding-left: 1px; padding-right: 1px; padding-top: 1px; padding-bottom: 1px; margin-left: 4px; margin-right: 4px; margin-top: 4px; margin-bottom: 4px;" />
     </ui:VisualElement>
 </ui:UXML>

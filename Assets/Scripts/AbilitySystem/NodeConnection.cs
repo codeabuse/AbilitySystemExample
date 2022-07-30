@@ -5,7 +5,7 @@ using UnityEngine;
 namespace AbilitySystem
 {
     [Serializable]
-    public class GraphNodeConnection
+    public class NodeConnection : ScriptableObject
     {
         [SerializeField]
         [Tooltip("In One way connection Node A is the main and Node B depends on it")]
@@ -24,31 +24,31 @@ namespace AbilitySystem
         public AbilityGraphNode NodeA => _nodeA;
         public AbilityGraphNode NodeB => _nodeB;
 
-        public GraphNodeConnection(AbilityGraphNode nodeA, AbilityGraphNode nodeB)
+        public void Connect(AbilityGraphNode nodeA, AbilityGraphNode nodeB)
         {
             if (nodeA == null || nodeB == null)
                 throw new NullReferenceException("Nodes can't be null!");
             (_nodeA, _nodeB) = (nodeA, nodeB);
+            _nodeA.AddConnection(this);
+            _nodeB.AddConnection(this);
         }
 
-        protected GraphNodeConnection() { }
-
-        public bool Connects(AbilityGraphNode node, bool directly = false)
+        public bool IsConnecting(AbilityGraphNode node, bool directly = false)
         {
             return directly? node == _nodeA || node == _nodeB : 
-                    Connects(node, new List<GraphNodeConnection>{this});
+                    IsConnecting(node, new List<NodeConnection>{this});
         }
 
-        public bool Connects(AbilityGraphNode node, List<GraphNodeConnection> excludeFromCheck)
+        public bool IsConnecting(AbilityGraphNode node, List<NodeConnection> excludeFromCheck)
         {
             foreach (var connection in node.Connections)
             {
                 if (excludeFromCheck.Contains(connection))
                     continue;
-                if (connection.Connects(node, true))
+                if (connection.IsConnecting(node, true))
                     return true;
                 excludeFromCheck.Add(connection);
-                if (connection.Connects(node, excludeFromCheck)) return true;
+                if (connection.IsConnecting(node, excludeFromCheck)) return true;
             }
 
             return false;
@@ -66,12 +66,12 @@ namespace AbilitySystem
         public override bool Equals(object obj)
         {
             if (ReferenceEquals(this, obj)) return true;
-            if (obj is GraphNodeConnection otherConnection)
+            if (obj is NodeConnection otherConnection)
                 return Equals(otherConnection);
             return false;
         }
 
-        protected bool Equals(GraphNodeConnection other)
+        protected bool Equals(NodeConnection other)
         {
             return _nodeA == other._nodeA && _nodeB == other._nodeB ||
                    _oneWay && other._oneWay && _nodeA == other._nodeB && _nodeB == other._nodeA;

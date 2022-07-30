@@ -21,11 +21,15 @@ namespace AbilitySystem
             return node.Connections.Any(connection =>
             {
                 var otherNode = connection.Other(node);
-                return otherNode == node.Graph.RootNode || //direct connection to the Root, or
-                       connection.OneWay
+                return connection.OneWay
                         ? AbilityManager.Instance.IsAbilityLeared(otherNode) && otherNode == connection.NodeA  //its dependency node is learned
                         : AbilityManager.Instance.IsAbilityLeared(otherNode); //or the connected ability is just leaned
             });
+        }
+        
+        public override string ToString()
+        {
+            return $"Any connected ability should be learned";
         }
     }
 
@@ -36,6 +40,10 @@ namespace AbilitySystem
         public override bool IsSatisfied(AbilityGraphNode node, Character character)
         {
             return character.AbilityPoints >= node.LearningCost;
+        }
+        public override string ToString()
+        {
+            return $"Ability points required: {LearningCost}";
         }
     }
 }

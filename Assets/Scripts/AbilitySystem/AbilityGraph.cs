@@ -8,56 +8,50 @@ namespace AbilitySystem
     public class AbilityGraph : ScriptableObject
     {
         public List<AbilityGraphNode> Nodes => _nodes;
-        public IEnumerable<GraphNodeConnection> Connections => _connections;
-        public AbilityGraphNode RootNode => _root;
+        public List<NodeConnection> Connections => _connections;
+
+        public AbilityGraphNode RootNode
+        {
+            get => _root;
+            set => _root = value;
+        }
         
-        public Action<AbilityGraphNode> OnAbilityNodeCreated;
-        public Action<AbilityGraphNode> OnAbilityNodeRemoved;
-        
-        [SerializeReference]
+        [SerializeField]
         private AbilityGraphNode _root;
         
         [SerializeField]
         private List<AbilityGraphNode> _nodes = new();
 
         [SerializeField]
-        private List<GraphNodeConnection> _connections = new();
+        private List<NodeConnection> _connections = new();
 
+        public void SetROot(AbilityGraphNode node) => RootNode = node;
 
-        public AbilityGraphNode CreateNode()
+        public void AddNode(AbilityGraphNode node)
         {
-            var node = new AbilityGraphNode(null, this);
             _nodes.Add(node);
-            OnAbilityNodeCreated?.Invoke(node);
-            return node;
         }
 
         public void RemoveNode(AbilityGraphNode node)
         {
             _nodes.Remove(node);
-            OnAbilityNodeRemoved?.Invoke(node);
         }
 
-        public void Connect(AbilityGraphNode nodeA, AbilityGraphNode nodeB)
+        public bool AddConnection(NodeConnection connection)
         {
-            var newConnection = new GraphNodeConnection(nodeA, nodeB);
-            if (!_connections.Contains(newConnection))
+            var identicalConnection = _connections.Find(x => x == connection);
+            if (identicalConnection == null)
             {
-                _connections.Add(newConnection);
-                nodeA.AddConnection(newConnection);
-                nodeB.AddConnection(newConnection);
+                _connections.Add(connection);
+                return true;
             }
+
+            return false;
         }
 
-        public void Disconnect(AbilityGraphNode nodeA, AbilityGraphNode nodeB)
+        public void RemoveConnection(NodeConnection connection)
         {
-            var connection = _connections.Find(x => x.Connects(nodeA) && x.Connects(nodeB));
-            if (connection != null)
-            {
-                _connections.Remove(connection);
-                nodeA.RemoveConnection(connection);
-                nodeB.RemoveConnection(connection);
-            }
+            _connections.Remove(connection);
         }
     }
 }

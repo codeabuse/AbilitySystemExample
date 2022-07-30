@@ -56,7 +56,7 @@ namespace AbilitySystem
             var canBeForgotten = _selectedAbilityNode != selectedGraphRoot && _selectedAbilityNode.Connections.Count() == 1 || 
                                      (from connection in _selectedAbilityNode.Connections select connection.Other(_selectedAbilityNode)).
                                      All(n => n.Connections.All(
-                                             c => c.Connects(selectedGraphRoot, abilityConnections.ToList())));
+                                             c => c.IsConnecting(selectedGraphRoot, abilityConnections.ToList())));
 
             if (_selectedCharacter == null || _selectedAbilityNode == null || !canBeForgotten)
             {

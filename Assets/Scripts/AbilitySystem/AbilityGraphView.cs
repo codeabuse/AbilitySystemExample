@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using PixelHunt;
-using UnityEditor;
 using UnityEngine;
 using UnityEngine.UIElements;
 
@@ -12,12 +11,16 @@ namespace AbilitySystem
         #region Shorthands
 
         private const string ability_button_class = "button-ability";
-        private static Texture2D default_icon = AssetDatabase.LoadAssetAtPath<Texture2D>("Assets/Textures/icon-fire.png");
         private static StyleEnum<Position> position_relative => new (Position.Relative);
         private static StyleEnum<Position> position_absolute => new (Position.Absolute);
 
         #endregion
-        
+
+        public float LineWidth
+        {
+            get => _lineWidth;
+            set => _lineWidth = Mathf.Clamp(value, .5f, 50f);
+        }
         
         private List<AbilityButton> _abilityButtons = new();
 
@@ -25,7 +28,7 @@ namespace AbilitySystem
         private AbilityGraph _graph;
         private VisualElement
                 _abilityInspector;
-
+        private float _lineWidth = 3;
 
         public new class UxmlFactory : UxmlFactory<AbilityGraphView, UxmlTraits> { }
         public new class UxmlTraits : VisualElement.UxmlTraits { }
@@ -38,12 +41,15 @@ namespace AbilitySystem
             {
                     style =
                     {
-                            position = position_absolute,
-                            backgroundImage = node.Ability?.Icon
+                            position = position_absolute
                     },
             };
-            nodeButton.RegisterOnLayoutDoneCallback(()=> nodeButton.transform.position = calculateButtonPosition(nodeButton) );
+            nodeButton.ExecuteAfterLayoutDone(()=> nodeButton.transform.position = calculateButtonPosition(nodeButton) );
             nodeButton.AddToClassList(ability_button_class);
+            if (node.Ability && node.Ability.Icon)
+            {
+                nodeButton.style.backgroundImage = node.Ability.Icon;
+            }
             _abilityButtons.Add(nodeButton);
             Add(nodeButton);
             
@@ -52,17 +58,7 @@ namespace AbilitySystem
 
         private Vector3 calculateButtonPosition(AbilityButton nodeButton)
         {
-            return nodeButton.Node.Position + nodeButton.parent.layout.size * .5f - nodeButton.layout.size* .5f;
-        }
-
-        public void RemoveButtonWithNode(AbilityGraphNode node)
-        {
-            var buttonFound = _abilityButtons.Find(b => b.Node == node);
-            if (buttonFound != null)
-            {
-                Remove(buttonFound);
-                _abilityButtons.Remove(buttonFound);
-            }
+            return nodeButton.Node.Position + layout.size * .5f - nodeButton.layout.size * .5f;
         }
 
         public void RemoveAbilityButton(AbilityButton button)
@@ -74,23 +70,32 @@ namespace AbilitySystem
             Remove(button);
         }
 
-        public void DrawConnection(GraphNodeConnection connection)
+        public NodeConnectionLine CreateConnection(NodeConnection connection)
         {
-            
+            var halfLayout = layout.size * .5f;
+            var (start, end) = (connection.NodeA.Position + halfLayout, connection.NodeB.Position + halfLayout);
+            var line = createLine(start, end);
+            Add(line);
+            line.SendToBack();
+            return line;
         }
 
-        public void MoveAbilityButton(AbilityButton node, Vector2 delta)
+        public NodeConnectionLine CreateConnection(AbilityButton a, AbilityButton b)
         {
-            
+            var start = calculateButtonPosition(a) + (Vector3)a.HalfSize;
+            var end = calculateButtonPosition(b) + (Vector3)b.HalfSize;
+            var line = createLine(start, end);
+            Add(line);
+            line.SendToBack();
+            return line;
         }
 
-        public void CleanButtons()
+        private NodeConnectionLine createLine(Vector3 start, Vector3 end)
         {
-            var childButtons =this.Query<AbilityButton>();
-            childButtons.ForEach(b =>
+            return new NodeConnectionLine(start, end, LineWidth)
             {
-                if (b.Node == null) Remove(b);
-            });
+                    style = { color = new StyleColor(Color.green) }
+            };
         }
     }
 }

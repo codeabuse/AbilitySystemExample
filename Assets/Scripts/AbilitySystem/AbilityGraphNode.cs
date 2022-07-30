@@ -4,12 +4,12 @@ using UnityEngine;
 
 namespace AbilitySystem
 {
-    [Serializable]
-    public class AbilityGraphNode
+    public class AbilityGraphNode : ScriptableObject
     {
         public static string POSITION_PROP_NAME => nameof(_position);
         public static string ABILITY_PROP_NAME => nameof(_ability);
-        public IEnumerable<AbilityLearnRequirement> Requirements => _requirements;
+        public List<AbilityLearnRequirement> Requirements => _requirements;
+        public List<NodeConnection> Connections => _connections;
 
         [SerializeField]
         private Vector2 _position;
@@ -17,13 +17,11 @@ namespace AbilitySystem
         [SerializeReference]
         private Ability _ability;
 
-        [SerializeReference]
-        private List<GraphNodeConnection> _connections = new ();
+        [SerializeField]
+        private List<NodeConnection> _connections = new ();
 
         [SerializeReference]
         private List<AbilityLearnRequirement> _requirements = new();
-
-        public AbilityGraph Graph { get; }
 
         public Vector2 Position
         {
@@ -40,38 +38,29 @@ namespace AbilitySystem
             set => _ability = value;
         }
 
-        public IEnumerable<GraphNodeConnection> Connections => _connections;
-
-        public AbilityGraphNode(Ability ability, AbilityGraph graph)
-        {
-            _ability = ability;
-            Graph = graph;
-        }
-
-        public AbilityGraphNode() { }
 
         public bool ConnectedWith(AbilityGraphNode node, bool directly = false)
         {
             if (directly)
             {
-                var connection = _connections.Find(x => x.Connects(node, true));
+                var connection = _connections.Find(x => x.IsConnecting(node, true));
                 return connection != null;
             }
             
             foreach (var connection in _connections)
             {
-                if (connection.Connects(node)) return true;
+                if (connection.IsConnecting(node)) return true;
             }
 
             return false;
         }
         
-        public void AddConnection(GraphNodeConnection connection)
+        public void AddConnection(NodeConnection connection)
         {
             _connections.Add(connection);
         }
 
-        public void RemoveConnection(GraphNodeConnection connection)
+        public void RemoveConnection(NodeConnection connection)
         {
             _connections.Remove(connection);
         }

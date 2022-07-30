@@ -1,4 +1,5 @@
-﻿using UnityEngine.UIElements;
+﻿using System.Threading.Tasks;
+using UnityEngine.UIElements;
 
 namespace AbilitySystem
 {
@@ -56,7 +57,7 @@ namespace AbilitySystem
         private void InspectNode(AbilityGraphNode node)
         {
             AbilityManager.Instance.SelectAbilityTreeNode(node);
-            if (node.Ability == null) return;
+            //if (node.Ability == null) return;
             _abilityInspectorRoot.style.display = display_flex;
             _abilityLabel.text = node.Ability?.DescriptiveName ?? string.Empty;
             _abilityDescription.text = node.Ability?.Description ?? string.Empty;
@@ -69,6 +70,17 @@ namespace AbilitySystem
             {
                  var button = GraphView.CreateNodeButton(node);
                  button.clicked += () => InspectNode(node);
+            }
+            
+            CreateConnectionLines(2);
+            
+            async void CreateConnectionLines(int milliseconds)
+            {
+                await Task.Delay(milliseconds);
+                foreach (var connection in characterAbilityGraph.Connections)
+                {
+                    var connectionLine = GraphView.CreateConnection(connection);
+                }
             }
         }
     }
