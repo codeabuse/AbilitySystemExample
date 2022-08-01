@@ -1,7 +1,0 @@
-<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
-    <Style src="project://database/Assets/Resources/UI/Styles/ability-management-styles.uss?fileID=7433441132597879392&amp;guid=4081e39f0c339874ab95f504fa47927e&amp;type=3#ability-management-styles" />
-    <ui:Button display-tooltip-when-elided="true" name="AbilityButton" class="button-ability" style="min-width: 30px;">
-        <ui:VisualElement name="DragHandle" class="handle-drag" style="position: absolute; width: 16px; height: 16px;" />
-    </ui:Button>
-    <LineSegmentDrawer start-x="30" start-y="96" end-x="136" end-y="96" class="connection-line" />
-</ui:UXML>

@@ -1,0 +1,16 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="True">
+    <ui:Toggle label="Is Root?" name="root-toggle" />
+    <uie:ObjectField label="Ability" type="AbilitySystem.Ability, Assembly-CSharp" name="ability-field" binding-path="_ability" />
+    <uie:IntegerField label="Learning Cost" value="0" name="learning-cost-field" binding-path="_learningCost" />
+    <uie:Vector2Field label="Graph Position" name="graph-position-field" binding-path="_graphPosition" />
+    <ui:VisualElement name="requirements-block">
+        <uie:PropertyField binding-path="_requirements" name="requirements-list" />
+        <ui:VisualElement name="add-requirement-block" style="flex-direction: row;">
+            <ui:DropdownField label="New requirement" index="-1" choices="System.Collections.Generic.List`1[System.String]" name="add-requirement-dropdown" style="flex-grow: 1;" />
+            <ui:Button text="Add" display-tooltip-when-elided="true" name="add-requirement-button" />
+        </ui:VisualElement>
+    </ui:VisualElement>
+    <ui:VisualElement name="connections-block" style="display: none;">
+        <uie:PropertyField name="connections-list" binding-path="_connections" />
+    </ui:VisualElement>
+</ui:UXML>

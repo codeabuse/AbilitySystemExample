@@ -1,3 +1,16 @@
-﻿fileFormatVersion: 2
+fileFormatVersion: 2
 guid: 7914b9cfc7b5444ebf271e4e02d36985
-timeCreated: 1658757480
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences:
+  - _inspectorVisualTree: {fileID: 9197481963319205126, guid: 3e42d68113431244c8a353ab60e4477a,
+      type: 3}
+  - _inspectorStyles: {fileID: 7433441132597879392, guid: 4081e39f0c339874ab95f504fa47927e,
+      type: 3}
+  - _graphVisualTree: {instanceID: 0}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

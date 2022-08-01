@@ -1,0 +1,187 @@
+.button:disabled {
+    color: rgb(106, 106, 106);
+    background-color: rgb(58, 58, 58);
+    display: flex;
+}
+
+.button:hover {
+    border-left-color: rgb(195, 128, 0);
+    border-right-color: rgb(195, 128, 0);
+    border-top-color: rgb(195, 128, 0);
+    border-bottom-color: rgb(195, 128, 0);
+}
+
+.button:active {
+    border-left-color: rgb(231, 152, 0);
+    border-right-color: rgb(231, 152, 0);
+    border-top-color: rgb(231, 152, 0);
+    border-bottom-color: rgb(231, 152, 0);
+    color: rgb(231, 152, 0);
+}
+
+.button-ability {
+    width: 60px;
+    height: 60px;
+    position: relative;
+    top: 3px;
+    left: 1px;
+    border-left-width: 4px;
+    border-right-width: 4px;
+    border-top-width: 4px;
+    border-bottom-width: 4px;
+    border-top-left-radius: 15px;
+    border-bottom-left-radius: 15px;
+    border-top-right-radius: 15px;
+    border-bottom-right-radius: 15px;
+    border-bottom-color: rgb(48, 48, 48);
+    border-left-color: rgb(48, 48, 48);
+    margin-left: 3px;
+    margin-right: 3px;
+    margin-top: 3px;
+    margin-bottom: 3px;
+    padding-left: 7px;
+    padding-right: 7px;
+    padding-top: 7px;
+    padding-bottom: 7px;
+    -unity-text-align: lower-right;
+    font-size: 19px;
+    -unity-font-style: bold;
+    min-width: 30px;
+    min-height: 30px;
+    max-width: 60px;
+    max-height: 60px;
+    flex-grow: 1;
+    overflow: visible;
+    background-image: url('project://database/Assets/Textures/icon-unknown.png?fileID=2800000&guid=7e648178c2f59ab4f8ff3975b3b9558e&type=3#icon-unknown');
+    -unity-background-image-tint-color: rgb(255, 255, 255);
+    background-color: rgb(60, 60, 60);
+    border-right-color: rgb(48, 48, 48);
+    border-top-color: rgb(48, 48, 48);
+}
+
+.ability-inspector {
+    visibility: visible;
+    display: flex;
+    background-color: rgb(56, 56, 56);
+    border-left-width: 5px;
+    border-right-width: 5px;
+    border-top-width: 5px;
+    border-bottom-width: 5px;
+    border-left-color: rgb(38, 38, 38);
+    border-right-color: rgb(38, 38, 38);
+    border-top-color: rgb(38, 38, 38);
+    border-bottom-color: rgb(38, 38, 38);
+}
+
+.handle-drag {
+    position: absolute;
+    top: 40px;
+    left: 58px;
+    overflow: hidden;
+    height: 20px;
+    width: 20px;
+    background-image: url('project://database/Assets/Textures/icon-move.png?fileID=2800000&guid=0b778a57e138e57419dcab6aafa1234a&type=3#icon-move');
+    border-left-width: 0;
+    border-right-width: 0;
+    border-top-width: 0;
+    border-bottom-width: 0;
+    border-top-left-radius: 3px;
+    border-bottom-left-radius: 3px;
+    border-top-right-radius: 3px;
+    border-bottom-right-radius: 3px;
+    background-color: rgb(40, 75, 38);
+}
+
+.button-ability:hover {
+    border-left-color: rgb(142, 85, 21);
+    border-right-color: rgb(142, 85, 21);
+    border-top-color: rgb(142, 85, 21);
+    border-bottom-color: rgb(142, 85, 21);
+    background-color: rgb(70, 58, 50);
+}
+
+.button-ability:focus {
+    border-left-color: rgb(185, 107, 18);
+    border-right-color: rgb(185, 107, 18);
+    border-top-color: rgb(185, 107, 18);
+    border-bottom-color: rgb(185, 107, 18);
+    background-color: rgb(79, 60, 48);
+}
+
+.button-ability:active {
+    border-left-color: rgb(185, 107, 18);
+    border-right-color: rgb(185, 107, 18);
+    border-top-color: rgb(185, 107, 18);
+    border-bottom-color: rgb(185, 107, 18);
+}
+
+.connection-line {
+    color: rgb(142, 89, 15);
+}
+
+.connection-line-active {
+    color: rgb(226, 124, 8);
+}
+
+.button {
+    flex-grow: 1;
+    border-left-width: 4px;
+    border-right-width: 4px;
+    border-top-width: 4px;
+    border-bottom-width: 4px;
+    font-size: 20px;
+    -unity-font-style: bold;
+    border-left-color: rgb(48, 48, 48);
+    border-right-color: rgb(48, 48, 48);
+    border-top-color: rgb(48, 48, 48);
+    border-bottom-color: rgb(48, 48, 48);
+    background-color: rgb(60, 60, 60);
+    color: rgb(210, 210, 210);
+}
+
+.button-ability-learned {
+    border-left-color: rgb(204, 115, 13);
+    border-right-color: rgb(204, 115, 13);
+    border-top-color: rgb(204, 115, 13);
+    border-bottom-color: rgb(204, 115, 13);
+    background-color: rgb(103, 70, 47);
+}
+
+.button-ability-learned:hover {
+    background-color: rgb(128, 88, 61);
+    border-left-color: rgb(253, 151, 35);
+    border-right-color: rgb(253, 151, 35);
+    border-top-color: rgb(253, 151, 35);
+    border-bottom-color: rgb(253, 151, 35);
+}
+
+.button-ability-learned:active {
+    background-color: rgb(103, 70, 47);
+    border-left-color: rgb(226, 124, 8);
+    border-right-color: rgb(226, 124, 8);
+    border-top-color: rgb(226, 124, 8);
+    border-bottom-color: rgb(226, 124, 8);
+}
+
+.button-ability-selected {
+    border-left-color: rgb(229, 135, 27);
+    border-right-color: rgb(229, 135, 27);
+    border-top-color: rgb(229, 135, 27);
+    border-bottom-color: rgb(229, 135, 27);
+}
+
+.button-ability-selected:hover {
+    background-color: rgb(79, 60, 48);
+    border-left-color: rgb(253, 151, 35);
+    border-right-color: rgb(253, 151, 35);
+    border-top-color: rgb(253, 151, 35);
+    border-bottom-color: rgb(253, 151, 35);
+}
+
+.button-ability-selected:active {
+    background-color: rgb(103, 70, 47);
+    border-left-color: rgb(226, 124, 8);
+    border-right-color: rgb(226, 124, 8);
+    border-top-color: rgb(226, 124, 8);
+    border-bottom-color: rgb(226, 124, 8);
+}

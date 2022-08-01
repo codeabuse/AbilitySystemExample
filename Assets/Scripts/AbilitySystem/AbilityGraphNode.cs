@@ -1,55 +1,63 @@
 ﻿using System;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 namespace AbilitySystem
 {
     public class AbilityGraphNode : ScriptableObject
     {
-        public static string POSITION_PROP_NAME => nameof(_position);
-        public static string ABILITY_PROP_NAME => nameof(_ability);
-        public List<AbilityLearnRequirement> Requirements => _requirements;
-        public List<NodeConnection> Connections => _connections;
-
-        [SerializeField]
-        private Vector2 _position;
-        
-        [SerializeReference]
-        private Ability _ability;
-
-        [SerializeField]
-        private List<NodeConnection> _connections = new ();
-
-        [SerializeReference]
-        private List<AbilityLearnRequirement> _requirements = new();
-
-        public Vector2 Position
-        {
-            get => _position; 
-            set => _position = value;
-        }
-        
-        
-        public int LearningCost => (_requirements.Find(x => x is AbilityPointsRequirement) as AbilityPointsRequirement)?.LearningCost?? 0;
-        
         public Ability Ability 
         { 
             get => _ability;
             set => _ability = value;
         }
-
-
-        public bool ConnectedWith(AbilityGraphNode node, bool directly = false)
+        
+        public Vector2 GraphPosition
         {
-            if (directly)
-            {
-                var connection = _connections.Find(x => x.IsConnecting(node, true));
-                return connection != null;
-            }
-            
+            get => _graphPosition;
+            set => _graphPosition = value;
+        }
+
+        public int LearningCost => _learningCost;
+        
+        
+        public AbilityButton NodeButton { get; set; }
+        
+        public List<NodeConnection> Connections => _connections;
+
+        [SerializeField, Min(0)]
+        private int _learningCost;
+        
+        [SerializeReference]
+        private Ability _ability;
+        
+        [SerializeField]
+        private Vector2 _graphPosition;
+        
+
+        [SerializeField]
+        private List<NodeConnection> _connections = new ();
+
+        public bool CanTraverseTo(
+                AbilityGraphNode targetNode, 
+                List<AbilityGraphNode> excludeFromSearch, 
+                Predicate<AbilityGraphNode> nodePassingRule = null)
+        {
+            excludeFromSearch ??= new();
+            nodePassingRule ??= n => true;
             foreach (var connection in _connections)
             {
-                if (connection.IsConnecting(node)) return true;
+                var otherNode = connection.Other(this);
+                if (excludeFromSearch.Contains(otherNode)) continue;
+                if (otherNode == targetNode) return true;
+                
+                excludeFromSearch.Add(otherNode);
+                if (nodePassingRule(otherNode))
+                {
+                    var canTraverse = otherNode.CanTraverseTo(targetNode, excludeFromSearch, nodePassingRule);
+                    if (canTraverse) return true;
+                }
             }
 
             return false;
@@ -64,11 +72,5 @@ namespace AbilitySystem
         {
             _connections.Remove(connection);
         }
-
-        public void AddRequirement(AbilityLearnRequirement requirement) => 
-                _requirements.Add(requirement);
-
-        public void RemoveRequirement(AbilityLearnRequirement requirement) => 
-                _requirements.Remove(requirement);
     }
 }

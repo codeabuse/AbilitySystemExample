@@ -1,0 +1,20 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="True">
+    <ui:Template name="ability-graph" src="project://database/Assets/UI/VisualTrees/ability-graph.uxml?fileID=9197481963319205126&amp;guid=8ccb92f9c0f2a034ab67f5836a7a7197&amp;type=3#ability-graph" />
+    <ui:Template name="ability-node-inspector" src="project://database/Assets/UI/Editor/ability-node-inspector.uxml?fileID=9197481963319205126&amp;guid=6894df6b9ee5b35439bc9289c738a001&amp;type=3#ability-node-inspector" />
+    <ui:Instance template="ability-graph" name="ability-graph" />
+    <ui:VisualElement name="graph-actions" style="flex-direction: row; margin-left: 1px; margin-right: 1px; margin-top: 5px; margin-bottom: 5px;">
+        <ui:Button display-tooltip-when-elided="true" text="New Node" name="new-node-button" style="min-width: 85px;" />
+        <ui:Button display-tooltip-when-elided="true" text="Connect..." name="connect-node-button" binding-path="_connectButtonText" style="min-width: 85px;" />
+        <ui:Button text="Disconnect" display-tooltip-when-elided="true" name="disconnect-button" />
+        <ui:Button display-tooltip-when-elided="true" text="Delete Node" name="delete-node-button" style="min-width: 85px;" />
+        <ui:Slider picking-mode="Ignore" value="0" high-value="5" low-value="1" binding-path="_graphScale" name="graph-scale-slider" style="flex-grow: 1;" />
+    </ui:VisualElement>
+    <ui:VisualElement name="node-inspector" style="flex-grow: 0; padding-left: 4px; padding-right: 4px; padding-top: 4px; padding-bottom: 4px;">
+        <ui:Label text="Node Inspector" display-tooltip-when-elided="true" style="-unity-font-style: bold; margin-left: 3px; margin-right: 3px; margin-top: 3px; margin-bottom: 3px;" />
+        <ui:Instance template="ability-node-inspector" name="ability-node-inspector" />
+    </ui:VisualElement>
+    <ui:VisualElement name="ability-inspector" style="flex-grow: 1; padding-left: 5px; padding-right: 5px; padding-top: 5px; padding-bottom: 5px;">
+        <ui:Label text="Ability Inspector" display-tooltip-when-elided="true" style="-unity-font-style: bold; margin-left: 3px; margin-right: 3px; margin-top: 3px; margin-bottom: 3px;" />
+    </ui:VisualElement>
+    <uie:PropertyField binding-path="_inspectedAbilityNode" name="ability-property-field" />
+</ui:UXML>

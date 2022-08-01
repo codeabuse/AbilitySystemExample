@@ -1,11 +1,16 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace AbilitySystem
 {
     public class Character : MonoBehaviour
     {
-        public int AbilityPoints => _abilityPoints;
+        public int AbilityPoints
+        {
+            get => _abilityPoints; 
+            set => _abilityPoints = Mathf.Clamp(value, 0, int.MaxValue);
+        }
         public IEnumerable<Ability> Abilities => _abilities;
         public AbilityGraph AbilityGraph => _abilityGraph;
         
@@ -26,6 +31,11 @@ namespace AbilitySystem
             }
         }
 
+        public bool HasAbility(Ability ability)
+        {
+            return _abilities.Contains(ability);
+        }
+        
         public void AddAbility(Ability ability)
         {
             _abilities.Add(ability);
@@ -36,9 +46,19 @@ namespace AbilitySystem
             _abilities.Remove(ability);
         }
 
-        public bool HasAbility(Ability ability)
+        public void RemoveAllAbilities()
         {
-            return _abilities.Contains(ability);
+            var rootAbility = _abilityGraph.RootNode.Ability;
+            foreach (var ability in _abilities)
+            {
+                if (ability == rootAbility)
+                {
+                    continue;
+                }
+                ability.Deactivate(this);
+            }
+            _abilities.Clear();
+            _abilities.Add(rootAbility);
         }
     }
 }

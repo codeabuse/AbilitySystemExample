@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using PixelHunt;
+﻿using PixelHunt;
 using UnityEngine;
 using UnityEngine.UIElements;
 
@@ -13,6 +12,12 @@ namespace AbilitySystem
         private const string ability_button_class = "button-ability";
         private static StyleEnum<Position> position_relative => new (Position.Relative);
         private static StyleEnum<Position> position_absolute => new (Position.Absolute);
+        
+        private const string button_normal_class = "button-ability";
+        private const string button_selected_class = "button-ability-selected";
+        private const string button_learned_class = "button-ability-learned";
+        private const string line_normal = "connection-line";
+        private const string line_active = "connection-line-active";
 
         #endregion
 
@@ -21,8 +26,6 @@ namespace AbilitySystem
             get => _lineWidth;
             set => _lineWidth = Mathf.Clamp(value, .5f, 50f);
         }
-        
-        private List<AbilityButton> _abilityButtons = new();
 
         private AbilityManager _manager;
         private AbilityGraph _graph;
@@ -35,8 +38,6 @@ namespace AbilitySystem
 
         public AbilityButton CreateNodeButton(AbilityGraphNode node)
         {
-            var buttonForNode = _abilityButtons.Find(b => b.Node == node);
-            if (buttonForNode != null) return buttonForNode;
             var nodeButton = new AbilityButton(node, null)
             {
                     style =
@@ -50,52 +51,53 @@ namespace AbilitySystem
             {
                 nodeButton.style.backgroundImage = node.Ability.Icon;
             }
-            _abilityButtons.Add(nodeButton);
             Add(nodeButton);
             
             return nodeButton;
         }
 
+        public void SetSelectedState(AbilityButton button)
+        {
+            button.AddToClassList(button_selected_class);
+        }
+
+        public void StopSelecting(AbilityButton button)
+        {
+            button.RemoveFromClassList(button_selected_class);
+        }
+
         private Vector3 calculateButtonPosition(AbilityButton nodeButton)
         {
-            return nodeButton.Node.Position + layout.size * .5f - nodeButton.layout.size * .5f;
+            return nodeButton.Node.GraphPosition + layout.size * .5f - nodeButton.layout.size * .5f;
         }
 
         public void RemoveAbilityButton(AbilityButton button)
         {
-            if (_abilityButtons.Contains(button))
-            {
-                _abilityButtons.Remove(button);
-            }
             Remove(button);
         }
 
-        public NodeConnectionLine CreateConnection(NodeConnection connection)
+        public void SetLearnedState(AbilityButton button)
         {
-            var halfLayout = layout.size * .5f;
-            var (start, end) = (connection.NodeA.Position + halfLayout, connection.NodeB.Position + halfLayout);
-            var line = createLine(start, end);
-            Add(line);
-            line.SendToBack();
-            return line;
+            button.AddToClassList(button_learned_class);
         }
+
+        public void SetNormalState(AbilityButton button)
+        {
+            button.RemoveFromClassList(button_learned_class);
+        }
+
+        public void LineNormal(NodeConnectionLine line) => line.RemoveFromClassList(line_active);
+        public void LineActive(NodeConnectionLine line) => line.AddToClassList(line_active);
 
         public NodeConnectionLine CreateConnection(AbilityButton a, AbilityButton b)
         {
             var start = calculateButtonPosition(a) + (Vector3)a.HalfSize;
             var end = calculateButtonPosition(b) + (Vector3)b.HalfSize;
-            var line = createLine(start, end);
+            var line = new NodeConnectionLine(start, end, _lineWidth);
             Add(line);
+            line.AddToClassList(line_normal);
             line.SendToBack();
             return line;
-        }
-
-        private NodeConnectionLine createLine(Vector3 start, Vector3 end)
-        {
-            return new NodeConnectionLine(start, end, LineWidth)
-            {
-                    style = { color = new StyleColor(Color.green) }
-            };
         }
     }
 }

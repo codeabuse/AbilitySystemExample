@@ -1,0 +1,4 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="True">
+    <uie:Vector3Field label="Test Vector3" binding-path="_testVector3" name="test-vector" />
+    <ui:Slider picking-mode="Ignore" label="Test Slider" value="42" high-value="100" binding-path="_testFloat" name="test-slider" />
+</ui:UXML>

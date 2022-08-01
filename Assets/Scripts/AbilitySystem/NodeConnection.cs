@@ -20,39 +20,72 @@ namespace AbilitySystem
             get => _oneWay;
             set => _oneWay = value;
         }
-        
-        public AbilityGraphNode NodeA => _nodeA;
-        public AbilityGraphNode NodeB => _nodeB;
+
+        public AbilityGraphNode NodeA
+        {
+            get => _nodeA;
+            set
+            {
+                if (_nodeA)
+                {
+                    _nodeA.RemoveConnection(this);
+                }
+
+                _nodeA = value;
+            }
+        }
+        public AbilityGraphNode NodeB {
+            get => _nodeB;
+            set
+            {
+                if (_nodeB)
+                {
+                    _nodeB.RemoveConnection(this);
+                }
+
+                _nodeB = value;
+            }
+        }
 
         public void Connect(AbilityGraphNode nodeA, AbilityGraphNode nodeB)
         {
             if (nodeA == null || nodeB == null)
                 throw new NullReferenceException("Nodes can't be null!");
+            if (nodeA == nodeB)
+            {
+                Debug.LogError("Connecting Node to itself is not allowed!");
+                return;
+            }
             (_nodeA, _nodeB) = (nodeA, nodeB);
             _nodeA.AddConnection(this);
             _nodeB.AddConnection(this);
         }
 
-        public bool IsConnecting(AbilityGraphNode node, bool directly = false)
-        {
-            return directly? node == _nodeA || node == _nodeB : 
-                    IsConnecting(node, new List<NodeConnection>{this});
-        }
+        public void Swap() => (_nodeA, _nodeB) = (_nodeB, _nodeA);
 
-        public bool IsConnecting(AbilityGraphNode node, List<NodeConnection> excludeFromCheck)
-        {
-            foreach (var connection in node.Connections)
-            {
-                if (excludeFromCheck.Contains(connection))
-                    continue;
-                if (connection.IsConnecting(node, true))
-                    return true;
-                excludeFromCheck.Add(connection);
-                if (connection.IsConnecting(node, excludeFromCheck)) return true;
-            }
+        // public bool IsConnecting(AbilityGraphNode node, bool directly = false)
+        // {
+        //     return directly? node == _nodeA || node == _nodeB : 
+        //             IsConnecting(node, new List<NodeConnection>{this});
+        // }
 
-            return false;
-        }
+        // public bool IsConnecting(AbilityGraphNode node, List<NodeConnection> excludeFromCheck, Predicate<AbilityGraphNode> nodePassingRule = null)
+        // {
+        //     if (nodePassingRule == null) nodePassingRule = graphNode => true;
+        //     if (excludeFromCheck == null) excludeFromCheck = new();
+        //     foreach (var connection in node.Connections)
+        //     {
+        //         if (excludeFromCheck.Contains(connection))
+        //             continue;
+        //         if (connection.IsConnecting(node, true) && nodePassingRule(connection.Other(node)))
+        //             return true;
+        //         excludeFromCheck.Add(connection);
+        //         if (connection.IsConnecting(node, excludeFromCheck) && nodePassingRule(connection.Other(node))) 
+        //             return true;
+        //     }
+        //
+        //     return false;
+        // }
 
         public AbilityGraphNode Other(AbilityGraphNode node)
         {

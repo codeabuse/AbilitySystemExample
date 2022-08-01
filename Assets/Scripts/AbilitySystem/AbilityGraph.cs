@@ -30,6 +30,7 @@ namespace AbilitySystem
         public void AddNode(AbilityGraphNode node)
         {
             _nodes.Add(node);
+            if (!RootNode) RootNode = node;
         }
 
         public void RemoveNode(AbilityGraphNode node)

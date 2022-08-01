@@ -25,6 +25,10 @@ public class DragManipulator : MouseManipulator
 
     private VisualElement _draggedElement;
 
+    public DragManipulator(MouseButton dragButton, VisualElement draggedElement) : this(dragButton)
+    {
+        DraggedElement = draggedElement;
+    }
     public DragManipulator(MouseButton dragButton)
     {
         activators.Add(new ManipulatorActivationFilter{ button = dragButton });

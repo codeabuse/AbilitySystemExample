@@ -18,6 +18,7 @@ namespace AbilitySystem
         public AbilityButton(AbilityGraphNode node, Action onButtonClicked) : base(onButtonClicked)
         {
             Node = node;
+            focusable = false;
         }
 
         public AbilityButton() { }

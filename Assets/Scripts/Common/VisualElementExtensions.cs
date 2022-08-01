@@ -15,7 +15,7 @@ namespace PixelHunt
                                                   throw new Exception("Element destroyed before layout happened")))
                 {
                     attempts--;
-                    await Task.Delay(1);
+                    await Task.Delay(2);
                 }
                 
                 callback?.Invoke();

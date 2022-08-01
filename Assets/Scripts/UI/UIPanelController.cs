@@ -7,6 +7,7 @@ using UnityEngine.UIElements;
 [RequireComponent(typeof(UIDocument))]
 public abstract class UIPanelController : MonoBehaviour
 {
+    public bool PanelEnabled => _panelEnabled;
     public VisualElement Root => Document ? Document.rootVisualElement : null;
     public UIDocument Document => _document? _document : _document = GetComponent<UIDocument>();
     
@@ -21,7 +22,7 @@ public abstract class UIPanelController : MonoBehaviour
     public UIPanelEvent OnPanelHidden;
 
     private UIDocument _document;
-
+    private bool _panelEnabled;
 
     protected virtual void Start()
     {
@@ -31,12 +32,13 @@ public abstract class UIPanelController : MonoBehaviour
             return;
         }
         UIManager.Instance.RegisterPanel(this);
-        Document.rootVisualElement.ExecuteAfterLayoutDone(OnDocumentLayoutDone);
     }
 
     protected virtual void OnEnable()
     {
         TogglePanelAction.action.Enable();
+        OnDocumentLayoutDone();
+        //Document.rootVisualElement.ExecuteAfterLayoutDone(OnDocumentLayoutDone);
     }
 
     protected virtual void OnDestroy()
@@ -46,14 +48,14 @@ public abstract class UIPanelController : MonoBehaviour
 
     public void ShowPanel()
     {
-        gameObject.SetActive(true);
+        gameObject.SetActive(_panelEnabled = true);
         OnShown();
         OnPanelShown?.Invoke(this);
     }
 
     public void HidePanel()
     {
-        gameObject.SetActive(false);
+        gameObject.SetActive(_panelEnabled = false);
         OnHidden();
         OnPanelHidden?.Invoke(this);
     }

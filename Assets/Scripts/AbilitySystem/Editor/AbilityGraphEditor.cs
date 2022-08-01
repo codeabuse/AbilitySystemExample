@@ -1,171 +1,225 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
-using PixelHunt;
+using System.Threading.Tasks;
 using UnityEditor;
-using UnityEditor.Experimental.GraphView;
 using UnityEditor.UIElements;
 using UnityEngine;
 using UnityEngine.UIElements;
+using Object = UnityEngine.Object;
 
 namespace AbilitySystem
 {
     [CustomEditor(typeof(AbilityGraph))]
-    public class AbilityGraphEditor : Editor
+    public class AbilityGraphEditor : VisualTreeEditor<AbilityGraph>
     {
-        private const string graph_asset_name = "Assets/Resources/UI/VisualTrees/ability-graph.uxml";
-        private const string styles_asset_name = "Assets/Resources/UI/Styles/ability-management-styles.uss";
+        #region Shorthands
+        
+        private static StyleEnum<DisplayStyle> display_flex = new (DisplayStyle.Flex);
+        private static StyleEnum<DisplayStyle> display_none = new (DisplayStyle.None);
 
-
-        private AbilityGraph _graph;
+        #endregion
+        
         private AbilityGraphView _graphView;
-        private VisualTreeAsset _graphVisualTree;
-        private StyleSheet _graphStyles;
 
         private VisualElement 
                 _root,
                 _abilityNodesRoot,
                 _nodeInspectorRoot;
-        
 
-        private SerializedProperty _nodesProperty;
 
-        private ListView _nodesListView;
-        private Dictionary<int, AbilityButton> _nodeViews = new();
-
-        private AbilityGraphNode _inspectedAbilityNode;
         private AbilityButton _inspectedNodeButton;
-        private VisualElement _buttonDragHandle;
-        private DragManipulator _buttonDragManipulator;
+        
+        private VisualElement _dragHandle;
         private Vector2Field _nodePositionField;
-        private ObjectField _nodeAbilityField;
+        private IntegerField _learningCostField;
+        private ObjectField _abilityField;
         private Slider _graphScaleSlider;
-        private Button _connectButton;
+        private Button 
+                _connectNodesButton,
+                _deleteNodeButton,
+                _disconnectButton;
+        
+        private Toggle _isRootToggle;
 
+        private DragManipulator _buttonDragManipulator;
+
+        #region Serialized Inspector Data
+
+        [SerializeField]
         private float _graphScale = 1f;
+        [SerializeField]
+        private string _connectButtonText = "Connect...";
+        [SerializeField]
+        private AbilityGraphNode _inspectedAbilityNode;
+        
+        #endregion
+        
         private Dictionary<NodeConnection, NodeConnectionLine> _connectionLines = new ();
         private bool _buttonPickMode;
 
-        private void OnEnable()
-        {
-            _graphVisualTree = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>(graph_asset_name);
-            _graphStyles = AssetDatabase.LoadAssetAtPath<StyleSheet>(styles_asset_name);
-            _root = new VisualElement();
-            _root.styleSheets.Add(_graphStyles);
-            _graph = target as AbilityGraph;
-            _nodesProperty = serializedObject.FindProperty("_nodes");
-        }
-
         private void OnDisable()
         {
-            AssetDatabase.SaveAssetIfDirty(_graph);
+            AssetDatabase.SaveAssetIfDirty(inspectedObject);
+            _connectionLines.Clear();
         }
 
-        public override VisualElement CreateInspectorGUI()
+        protected override void OnInspectorTreeCreated()
         {
-            _graphVisualTree.CloneTree(_root);
-            _graphView = _root.Q<AbilityGraphView>();
-            var buttonsRoot = new VisualElement()
-            {
-                    style =
-                    {
-                            flexGrow = .15f, 
-                            flexShrink = 0,
-                            flexDirection = new StyleEnum<FlexDirection>(FlexDirection.Row)
-                    }
-            };
-            buttonsRoot.Add(new Button(CreateNodeClicked){text = "Create Node"});
-            buttonsRoot.Add(_connectButton = new Button(CreateConnectionClicked){text = "Connect..."});
-            buttonsRoot.Add(new Button(DeleteNodeClicked){text = "Delete Node"});
-            buttonsRoot.Add(_graphScaleSlider = new Slider( 0.5f, 3f)
-            {
-                    style = { flexGrow = 1},
-                    //labelElement = { style = { flexShrink = 1, maxWidth = 50}}
-            });
-            _graphScaleSlider.value = _graphScale;
+            rootVisualElement.Q<Button>("new-node-button").clicked += CreateNodeClicked;
+            (_connectNodesButton = rootVisualElement.Q<Button>("connect-node-button")).clicked += CreateConnectionClicked;
+            (_deleteNodeButton = rootVisualElement.Q<Button>("delete-node-button")).clicked += DeleteNodeClicked;
+            (_disconnectButton = rootVisualElement.Q<Button>("disconnect-button")).clicked += DisconnectClicked;
+            (_isRootToggle = rootVisualElement.Q<Toggle>("root-toggle")).RegisterCallback<ChangeEvent<bool>>(HandleRootToggleClicked);
+            
+            _nodePositionField = rootVisualElement.Q<Vector2Field>("graph-position-field");
+            _abilityField = rootVisualElement.Q<ObjectField>("ability-field");
+            _abilityField.RegisterCallback<ChangeEvent<Object>>(HandleAbilityChangedEvent);
+            _learningCostField = rootVisualElement.Q<IntegerField>("learning-cost-field");
+            
+            _graphView = rootVisualElement.Q<AbilityGraphView>();
+            _graphView.parent.AddManipulator(new DragManipulator(MouseButton.MiddleMouse, _graphView));
+            
+            _nodeInspectorRoot = rootVisualElement.Q("node-inspector");
+            NoNodeInspected();
+            
+            _graphScaleSlider = rootVisualElement.Q<Slider>("graph-scale-slider");
             _graphScaleSlider.RegisterCallback<ChangeEvent<float>>(x=>
             {
                 _graphView.transform.scale = Vector3.one * (1f / (_graphScale = x.newValue));
                 if (_buttonDragManipulator == null) return;
                 _buttonDragManipulator.DragScale = _graphScale;
             });
-            _root.Add(buttonsRoot);
-            _root.Add(_nodeInspectorRoot = new ScrollView
-            {
-                    style = {flexGrow = 1, 
-                            minHeight = 150,
-                            display = new StyleEnum<DisplayStyle>(DisplayStyle.None)
-                    }, 
-                    horizontalScrollerVisibility = ScrollerVisibility.Hidden,
-            });
-            _nodeInspectorRoot.Add(new Label("Node Inspector"){style = { unityFontStyleAndWeight = new StyleEnum<FontStyle>(FontStyle.Bold)}});
-            _nodePositionField = new Vector2Field("Position"){ bindingPath = "_position"};
-            _nodeAbilityField = new ObjectField("Ability") { objectType = typeof(Ability), bindingPath = "_ability"};
-            _nodeAbilityField.RegisterCallback<ChangeEvent<Object>>(HandleAbilityChangedEvent);
-            _nodeInspectorRoot.Add(_nodePositionField);
-            _nodeInspectorRoot.Add(_nodeAbilityField);
-
-            _buttonDragHandle = new VisualElement();
-            _buttonDragHandle.AddToClassList("handle-drag");
-            _buttonDragManipulator = new DragManipulator(MouseButton.LeftMouse);
-            _buttonDragManipulator.OnDragged += ButtonDragged;
-            _buttonDragHandle.AddManipulator(_buttonDragManipulator);
-            _nodeInspectorRoot.Add(_buttonDragHandle);
-            foreach (var graphNode in _graph.Nodes)
+            
+            CreateDragHandle();
+            
+            foreach (var graphNode in inspectedObject.Nodes)
             {
                 CreateButton(graphNode);
             }
             
-            EditorApplication.update += OnEditorUpdate;
+            DelayedDrawConnections();
+        }
 
-            return _root;
+
+        private void DisconnectClicked()
+        {
+            if (_inspectedAbilityNode)
+            {
+                for (var index = 0; index < _inspectedAbilityNode.Connections.Count; index++)
+                {
+                    var nodeConnection = _inspectedAbilityNode.Connections[index];
+                    
+                    nodeConnection.Other(_inspectedAbilityNode).Connections.Remove(nodeConnection);
+                    _graphView.Remove(_connectionLines[nodeConnection]);
+                    _connectionLines.Remove(nodeConnection);
+                    inspectedObject.RemoveConnection(nodeConnection);
+                    AssetDatabase.RemoveObjectFromAsset(nodeConnection);
+                }
+                _graphView.MarkDirtyRepaint();
+                _inspectedAbilityNode.Connections.Clear();
+                serializedObject.Update();
+            }
+        }
+
+        private async void DelayedDrawConnections()
+        {
+            await Task.Delay(2);
+            foreach (var connection in inspectedObject.Connections)
+            {
+                CreateConnectionLine(connection);
+            }
+        }
+
+        private void CreateDragHandle()
+        {
+            _dragHandle = new VisualElement();
+            _dragHandle.AddToClassList("handle-drag");
+            _buttonDragManipulator = new DragManipulator(MouseButton.LeftMouse);
+            _buttonDragManipulator.OnDragged += ButtonDragged;
+            _dragHandle.AddManipulator(_buttonDragManipulator);
+            _nodeInspectorRoot.Add(_dragHandle);
+        }
+
+        private void ActivateDragHandle(VisualElement targetElement)
+        {
+            targetElement.Add(_dragHandle);
+            _buttonDragManipulator.DraggedElement = targetElement;
+        }
+
+        private void DeactivateDragHandle()
+        {
+            _nodeInspectorRoot.Add(_dragHandle);
         }
 
         private void HandleAbilityChangedEvent(ChangeEvent<Object> evt)
         {
-            if (evt.newValue && evt.newValue is Ability ability && _inspectedAbilityNode)
+            if (evt.newValue && evt.newValue is Ability ability)
             {
-                _nodeViews[_inspectedAbilityNode.GetInstanceID()].style.backgroundImage = ability.Icon;
+                _inspectedAbilityNode.NodeButton.style.backgroundImage = ability.Icon;
             }
-        }
-
-        private int skipUpdates = 1;
-
-        private void OnEditorUpdate()
-        {
-            if (skipUpdates > 0)
-            {
-                skipUpdates--;
-                return;
-            }
-            foreach (var connection in _graph.Connections)
-            {
-                CreateConnectionLine(connection);
-            }
-            EditorApplication.update -= OnEditorUpdate;
+            _inspectedAbilityNode.Ability = evt.newValue as Ability;
+            serializedObject.Update();
         }
 
         private void CreateNodeClicked()
         {
             var node = CreateInstance<AbilityGraphNode>();
-            AssetDatabase.AddObjectToAsset(node, AssetDatabase.GetAssetPath(_graph));
+            node.name = "Ability Node";
+            AssetDatabase.AddObjectToAsset(node, AssetDatabase.GetAssetPath(inspectedObject));
             var button = CreateButton(node);
-            _graph.AddNode(node);
+            inspectedObject.AddNode(node);
             serializedObject.Update();
+            
+            if (_inspectedNodeButton != null)
+            {
+                CreateConnection(_inspectedNodeButton.Node, node);
+            }
             InspectNode(button);
+        }
+
+        private void HandleButtonClickEvent(ClickEvent evt)
+        {
+            if (evt.target is not AbilityButton button) return;
+            if (_buttonPickMode)
+            {
+                CreateConnection(_inspectedNodeButton.Node, button.Node);
+            }
+            InspectNode(button);
+        }
+
+        private void CreateConnection(AbilityGraphNode a, AbilityGraphNode b)
+        {
+            var connection = CreateInstance<NodeConnection>();
+            connection.Connect(a, b);
+            connection.name = "Connection";
+            if (!inspectedObject.AddConnection(connection))
+            {
+                ExitButtonPickMode();
+                return;
+            }
+            AssetDatabase.AddObjectToAsset(connection, AssetDatabase.GetAssetPath(inspectedObject));
+            serializedObject.Update();
+            CreateConnectionLineDelayed(connection);
+            ExitButtonPickMode();
+            _graphView.MarkDirtyRepaint();
+        }
+
+        private void HandleRootToggleClicked(ChangeEvent<bool> evt)
+        {
+            if (evt.newValue)
+            {
+                inspectedObject.RootNode = _inspectedAbilityNode;
+                _isRootToggle.SetEnabled(false);
+            }
         }
 
         private AbilityButton CreateButton(AbilityGraphNode node)
         {
             var newButton = _graphView.CreateNodeButton(node);
             newButton.RegisterCallback<ClickEvent>(HandleButtonClickEvent);
-            _nodeViews.Add(node.GetInstanceID(), newButton);
+            node.NodeButton = newButton;
             return newButton;
-        }
-
-        private void HandleButtonClickEvent(ClickEvent evt)
-        {
-            if (evt.target is not AbilityButton button || _buttonPickMode) return;
-            InspectNode(button);
         }
 
         private void CreateConnectionClicked()
@@ -178,63 +232,41 @@ namespace AbilitySystem
             ExitButtonPickMode();
         }
 
-        private void ProcessButtonPickedEvent(MouseUpEvent evt)
-        {
-            if (evt.target is AbilityButton button)
-            {
-                var connection = CreateInstance<NodeConnection>();
-                connection.Connect(_inspectedNodeButton.Node, button.Node);
-                if (!_graph.AddConnection(connection))
-                {
-                    ExitButtonPickMode();
-                    return;
-                }
-                AssetDatabase.AddObjectToAsset(connection, AssetDatabase.GetAssetPath(_graph));
-                serializedObject.Update();
-                CreateConnectionLine(connection);
-                ExitButtonPickMode();
-            }
-        }
-
         private void EnterButtonPickMode()
         {
             _buttonPickMode = true;
-            _connectButton.text = "Cancel connection";
-            foreach (var button in _nodeViews.Values)
-            {
-                if (button == _inspectedNodeButton) continue;
-                button.RegisterCallback<MouseUpEvent>(ProcessButtonPickedEvent);
-            }
+            _connectNodesButton.text = "Cancel connection";
         }
 
         private void ExitButtonPickMode()
         {
             _buttonPickMode = false;
-            foreach (var button in _nodeViews.Values)
-            {
-                button.UnregisterCallback<MouseUpEvent>(ProcessButtonPickedEvent);
-            }
-            _connectButton.text = "Connect...";
+            _connectNodesButton.text = "Connect...";
         }
 
         private void CreateConnectionLine(NodeConnection connection)
         {
-            var buttonA = _nodeViews[connection.NodeA.GetInstanceID()];
-            var buttonB = _nodeViews[connection.NodeB.GetInstanceID()];
+            var buttonA = connection.NodeA.NodeButton;
+            var buttonB = connection.NodeB.NodeButton;
             var line = _graphView.CreateConnection(buttonA, buttonB);
             buttonA.RegisterCallback<ElementDraggedEvent>(line.HandleStartDraggedEvent);
             buttonB.RegisterCallback<ElementDraggedEvent>(line.HandleEndDraggedEvent);
             _connectionLines.Add(connection, line);
+        }
+        
+        
+        private async void CreateConnectionLineDelayed(NodeConnection connection)
+        {
+            await Task.Delay(4);
+            CreateConnectionLine(connection);
         }
 
         private void DestroyConnectionLine(NodeConnection connection)
         {
             if (_connectionLines.TryGetValue(connection, out var line))
             {
-                var buttonA = _nodeViews[connection.NodeA.GetInstanceID()];
-                var buttonB = _nodeViews[connection.NodeB.GetInstanceID()];
-                buttonA.UnregisterCallback<ElementDraggedEvent>(line.HandleStartDraggedEvent);
-                buttonB.UnregisterCallback<ElementDraggedEvent>(line.HandleEndDraggedEvent);
+                connection.NodeA.NodeButton.UnregisterCallback<ElementDraggedEvent>(line.HandleStartDraggedEvent);
+                connection.NodeB.NodeButton.UnregisterCallback<ElementDraggedEvent>(line.HandleEndDraggedEvent);
                 _connectionLines.Remove(connection);
             }
         }
@@ -242,30 +274,33 @@ namespace AbilitySystem
         private void DeleteNodeClicked()
         {
             if (_inspectedAbilityNode == null) return;
-            _nodeAbilityField.Unbind();
+            AssetDatabase.RemoveObjectFromAsset(_inspectedAbilityNode);
             _nodePositionField.Unbind();
-            _graph.Nodes.Remove(_inspectedAbilityNode);
+            inspectedObject.Nodes.Remove(_inspectedAbilityNode);
             
             foreach (var connection in _inspectedAbilityNode.Connections)
             {
+                AssetDatabase.RemoveObjectFromAsset(connection);
                 DestroyConnectionLine(connection);
-                _graph.RemoveConnection(connection);
+                inspectedObject.RemoveConnection(connection);
             }
+            
             _inspectedAbilityNode.Connections.Clear();
             _graphView.RemoveAbilityButton(_inspectedNodeButton);
-            _nodeInspectorRoot.Add(_buttonDragHandle);
-            _nodeViews.Remove(_inspectedAbilityNode.GetInstanceID());
+            DeactivateDragHandle();
             _inspectedAbilityNode = null;
             _inspectedNodeButton = null;
-            _nodeInspectorRoot.style.display = new StyleEnum<DisplayStyle>(DisplayStyle.None);
-            serializedObject.ApplyModifiedProperties();
-            AssetDatabase.SaveAssets();
+            NoNodeInspected();
+            serializedObject.Update();
         }
 
         private void InspectNode(AbilityButton button)
         {
+            if (_inspectedNodeButton == button) return;
+            
             if (_inspectedNodeButton != null)
             {
+                _graphView.StopSelecting(_inspectedNodeButton);
                 foreach (var connection in _inspectedNodeButton.Node.Connections)
                 {
                     if (_connectionLines.TryGetValue(connection, out var line))
@@ -275,13 +310,26 @@ namespace AbilitySystem
                     }
                 }
             }
+            _nodePositionField.Unbind();
+            _abilityField.Unbind();
+            _learningCostField.Unbind();
+            
             _inspectedAbilityNode = button.Node;
             _inspectedNodeButton = button;
+            _connectNodesButton.style.display =
+                    _deleteNodeButton.style.display =
+                            _disconnectButton.style.display =
+                                _nodeInspectorRoot.style.display = display_flex;
+            
+            _graphView.SetSelectedState(_inspectedNodeButton);
+            var isRoot = _inspectedAbilityNode == inspectedObject.RootNode;
+            _isRootToggle.value = isRoot;
+            _isRootToggle.SetEnabled(!isRoot);
+            
             foreach (var connection in _inspectedNodeButton.Node.Connections)
             {
                 if (_connectionLines.TryGetValue(connection, out var line))
                 {
-                    
                     _inspectedNodeButton.RegisterCallback<ElementDraggedEvent>(
                             connection.NodeA == _inspectedAbilityNode? 
                                     line.HandleStartDraggedEvent : 
@@ -289,14 +337,20 @@ namespace AbilitySystem
                     
                 }
             }
-            button.Add(_buttonDragHandle);
-            _buttonDragManipulator.DraggedElement = button;
-            _nodeInspectorRoot.style.display = new StyleEnum<DisplayStyle>(DisplayStyle.Flex);
-            _nodeAbilityField.value = default;
-            _nodePositionField.value = default;
+
+            ActivateDragHandle(_inspectedNodeButton);
             var so = new SerializedObject(_inspectedAbilityNode);
-            _nodeAbilityField.BindProperty(so.FindProperty("_ability"));
-            _nodePositionField.BindProperty(so.FindProperty("_position"));
+            _nodePositionField.Bind(so);
+            _abilityField.Bind(so);
+            _learningCostField.Bind(so);
+        }
+
+        private void NoNodeInspected()
+        {
+            _connectNodesButton.style.display =
+                    _deleteNodeButton.style.display = 
+                            _disconnectButton.style.display =
+                                    _nodeInspectorRoot.style.display = display_none;
         }
 
         private void ButtonDragged(Vector2 delta)
@@ -308,8 +362,10 @@ namespace AbilitySystem
                 {
                     if (_connectionLines.TryGetValue(connection, out var line))
                     {
-                        if (connection.NodeA == _inspectedAbilityNode) line.Start += delta;
-                        if (connection.NodeB == _inspectedAbilityNode) line.End += delta;
+                        if (_inspectedAbilityNode == connection.NodeA) 
+                            line.Start += delta * _graphScale;
+                        else 
+                            line.End += delta * _graphScale;
                     }
                 }
             }
