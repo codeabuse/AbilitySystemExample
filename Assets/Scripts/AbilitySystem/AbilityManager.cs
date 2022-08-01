@@ -81,7 +81,7 @@ namespace AbilitySystem
             }
 
             _selectedCharacter.RemoveAllAbilities();
-            Debug.LogError("Abilities cleared");
+            Debug.Log("Abilities cleared");
         }
 
         public bool IsAbilityLearned(AbilityGraphNode node)

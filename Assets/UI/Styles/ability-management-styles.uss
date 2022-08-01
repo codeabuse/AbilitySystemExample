@@ -161,6 +161,7 @@
     border-right-color: rgb(226, 124, 8);
     border-top-color: rgb(226, 124, 8);
     border-bottom-color: rgb(226, 124, 8);
+    width: 20%;
 }
 
 .button-ability-selected {

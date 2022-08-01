@@ -39,11 +39,11 @@ namespace AbilitySystem
             AbilityManager.Instance.OnCharacterSelected += CharacterSelected;
         }
 
-        protected override void OnDocumentLayoutDone()
+        protected override void OnEnable()
         {
             GraphView = Root.Q<AbilityGraphView>();
             _abilityInspectorRoot = Document.rootVisualElement.Q("ability-inspector");
-            _abilityInspectorRoot.style.display = display_none;
+            _abilityInspectorRoot.style.visibility = element_hidden;
             _abilityLabel = Document.rootVisualElement.Q<Label>("ability-title");
             _abilityDescription = Document.rootVisualElement.Q<Label>("ability-description");
             _abilityCost = Document.rootVisualElement.Q<Label>("ability-cost-value");
@@ -55,11 +55,7 @@ namespace AbilitySystem
             _learnButton.clicked += LearnSelected;
             _forgetButton.clicked += ForgetSelected;
             _forgetAllButton.clicked += ForgetAll;
-        }
-
-        protected override void OnEnable()
-        {
-            base.OnEnable();
+            
             if (AbilityManager.Instance.SelectedCharacter)
             {
                 BuildGraph(AbilityManager.Instance.SelectedCharacter.AbilityGraph);
@@ -92,7 +88,8 @@ namespace AbilitySystem
             {
                 GraphView.StopSelecting(_inspectedNodeButton);
             }
-            _abilityInspectorRoot.style.display = display_flex;
+
+            _abilityInspectorRoot.style.visibility = element_visible;
             UpdateAbilityInspectorState(node);
             _inspectedNodeButton = node.NodeButton;
             GraphView.SetSelectedState(_inspectedNodeButton);
@@ -128,7 +125,10 @@ namespace AbilitySystem
         private void ForgetAll()
         {
             AbilityManager.Instance.ForgetAllAbilities();
-            GraphView.Query<AbilityButton>().ForEach(b => GraphView.SetNormalState(b));
+            GraphView.Query<AbilityButton>().ForEach(b =>
+            {
+                if (b.Node != _selectedCharacter.AbilityGraph.RootNode) GraphView.SetNormalState(b);
+            });
             _currentPoints.text = _selectedCharacter.AbilityPoints.ToString();
             UpdateAbilityInspectorState(_inspectedNodeButton.Node);
         }

@@ -1,24 +1,25 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="False">
     <Style src="project://database/Assets/UI/Styles/ability-management-styles.uss?fileID=7433441132597879392&amp;guid=4081e39f0c339874ab95f504fa47927e&amp;type=3#ability-management-styles" />
-    <ui:VisualElement name="ability-description-area" class="section-panel" style="flex-grow: 0.25; min-height: 100%; min-width: 20px; background-color: rgb(56, 56, 56); flex-shrink: 0;">
+    <ui:VisualElement name="ability-description-area" class="section-panel" style="flex-grow: 0; min-height: 100%; min-width: 20%; background-color: rgb(56, 56, 56); flex-shrink: 0;">
         <ui:VisualElement name="text-area" style="flex-grow: 1; margin-left: 10px; margin-right: 10px; margin-top: 10px; margin-bottom: 10px; border-left-color: rgb(70, 70, 70); border-right-color: rgb(70, 70, 70); border-top-color: rgb(70, 70, 70); border-bottom-color: rgb(70, 70, 70); border-left-width: 4px; border-right-width: 4px; border-top-width: 4px; border-bottom-width: 4px;">
-            <ui:Label text="Ability Title" display-tooltip-when-elided="true" name="ability-title" style="height: 50px; margin-left: 0; margin-right: 0; margin-top: 0; margin-bottom: 0; padding-left: 6px; padding-right: 6px; padding-top: 6px; padding-bottom: 6px; font-size: 25%; -unity-font-style: bold; color: rgba(210, 210, 210, 255);" />
-            <ui:Label text="Ability description text" display-tooltip-when-elided="true" name="ability-description" style="flex-grow: 1; padding-left: 6px; padding-right: 6px; padding-top: 6px; padding-bottom: 6px; font-size: 16px; color: rgba(210, 210, 210, 255);" />
-            <ui:VisualElement name="cost-area" style="height: 15%; flex-direction: row;">
-                <ui:Label text="Ability points required:" display-tooltip-when-elided="true" name="ability-cost-label" style="flex-grow: 0; padding-left: 6px; padding-right: 6px; padding-top: 6px; padding-bottom: 6px; font-size: 16px; color: rgba(210, 210, 210, 255);" />
-                <ui:Label text="0&#10;" display-tooltip-when-elided="true" name="ability-cost-value" style="flex-grow: 1; padding-left: 6px; padding-right: 6px; padding-top: 6px; padding-bottom: 6px; font-size: 16px; color: rgba(210, 210, 210, 255);" />
+            <ui:Label text="Ability Title" display-tooltip-when-elided="true" name="ability-title" style="height: 50px; margin-left: 0; margin-right: 0; margin-top: 0; margin-bottom: 0; padding-left: 6px; padding-right: 6px; padding-top: 6px; padding-bottom: 6px; font-size: 37%; -unity-font-style: bold; color: rgb(210, 210, 210);" />
+            <ui:Label text="Ability description text" display-tooltip-when-elided="true" name="ability-description" style="flex-grow: 1; padding-left: 6px; padding-right: 6px; padding-top: 6px; padding-bottom: 6px; font-size: 24%; color: rgb(210, 210, 210);" />
+            <ui:VisualElement name="cost-area" style="flex-direction: row;">
+                <ui:Label text="Ability points required:" display-tooltip-when-elided="true" name="ability-cost-label" style="flex-grow: 0; padding-left: 6px; padding-right: 6px; padding-top: 6px; padding-bottom: 6px; font-size: 20%; color: rgb(210, 210, 210);" />
+                <ui:Label text="0&#10;" display-tooltip-when-elided="true" name="ability-cost-value" style="flex-grow: 1; padding-left: 6px; padding-right: 6px; padding-top: 6px; padding-bottom: 6px; font-size: 20%; color: rgb(210, 210, 210);" />
             </ui:VisualElement>
-            <ui:VisualElement name="current-points-area" style="height: 15%; flex-direction: row;">
-                <ui:Label text="Available points:" display-tooltip-when-elided="true" name="ability-points-label" style="flex-grow: 0; padding-left: 6px; padding-right: 6px; padding-top: 6px; padding-bottom: 6px; font-size: 16px; color: rgba(210, 210, 210, 255);" />
-                <ui:Label text="0&#10;" display-tooltip-when-elided="true" name="ability-points-value" style="flex-grow: 1; padding-left: 6px; padding-right: 6px; padding-top: 6px; padding-bottom: 6px; font-size: 16px; color: rgba(210, 210, 210, 255);" />
+            <ui:VisualElement name="current-points-area" style="flex-direction: row;">
+                <ui:Label text="Available points:" display-tooltip-when-elided="true" name="ability-points-label" style="flex-grow: 0; padding-left: 6px; padding-right: 6px; padding-top: 6px; padding-bottom: 6px; font-size: 20%; color: rgb(210, 210, 210);" />
+                <ui:Label text="0&#10;" display-tooltip-when-elided="true" name="ability-points-value" style="flex-grow: 1; padding-left: 6px; padding-right: 6px; padding-top: 6px; padding-bottom: 6px; font-size: 20%; color: rgb(210, 210, 210);" />
             </ui:VisualElement>
         </ui:VisualElement>
         <ui:VisualElement name="buttons-row" style="flex-grow: 0; height: 70px; flex-direction: row; justify-content: space-around; padding-left: 8px; padding-right: 8px; padding-top: 8px; padding-bottom: 8px; margin-left: 0; margin-right: 0; margin-top: 0; margin-bottom: 0;">
-            <ui:Button text="Learn" display-tooltip-when-elided="true" name="learn-button" class="button" style="color: rgba(210, 210, 210, 255);" />
-            <ui:Button text="Forget" display-tooltip-when-elided="true" name="forget-button" class="button" style="flex-grow: 1; border-left-width: 4px; border-right-width: 4px; border-top-width: 4px; border-bottom-width: 4px; font-size: 20px; -unity-font-style: bold; color: rgba(210, 210, 210, 255);" />
+            <ui:Button text="Learn" display-tooltip-when-elided="true" name="learn-button" class="button" style="color: rgb(210, 210, 210);" />
+            <ui:VisualElement style="min-width: 5%;" />
+            <ui:Button text="Forget" display-tooltip-when-elided="true" name="forget-button" class="button" style="flex-grow: 1; border-left-width: 4px; border-right-width: 4px; border-top-width: 4px; border-bottom-width: 4px; color: rgb(210, 210, 210);" />
         </ui:VisualElement>
         <ui:VisualElement name="buttons-row" style="flex-grow: 0; height: 70px; flex-direction: row; justify-content: space-around; padding-left: 8px; padding-right: 8px; padding-top: 8px; padding-bottom: 8px; margin-left: 0; margin-right: 0; margin-top: 0; margin-bottom: 0;">
-            <ui:Button text="Forget All" display-tooltip-when-elided="true" name="forget-all-button" class="button" style="color: rgba(210, 210, 210, 255);" />
+            <ui:Button text="Forget All" display-tooltip-when-elided="true" name="forget-all-button" class="button" style="color: rgb(210, 210, 210);" />
         </ui:VisualElement>
     </ui:VisualElement>
 </ui:UXML>

@@ -1,6 +1,4 @@
-﻿using System;
-using PixelHunt;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UIElements;
 
@@ -36,13 +34,13 @@ public abstract class UIPanelController : MonoBehaviour
 
     protected virtual void OnEnable()
     {
+        if (!TogglePanelAction) return;
         TogglePanelAction.action.Enable();
-        OnDocumentLayoutDone();
-        //Document.rootVisualElement.ExecuteAfterLayoutDone(OnDocumentLayoutDone);
     }
 
     protected virtual void OnDestroy()
     {
+        if (!TogglePanelAction) return;
         TogglePanelAction.action.Disable();
     }
 
@@ -72,8 +70,6 @@ public abstract class UIPanelController : MonoBehaviour
         else
             ShowPanel();
     }
-
-    protected virtual void OnDocumentLayoutDone() { }
 
     protected virtual void OnShown(){}
     protected virtual void OnHidden(){}
